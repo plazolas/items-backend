@@ -12,7 +12,7 @@
     <artifactId>items-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>items-backend</name>
-    <description>Spring JPA demo to jar artifact</description>
+    <description>Spring JPA backend items manager</description>
 
     <properties>
         <java.version>11</java.version>
