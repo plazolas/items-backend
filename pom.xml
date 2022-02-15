@@ -11,7 +11,7 @@
     <groupId>com.oz</groupId>
     <artifactId>items-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demojar</name>
+    <name>items-backend</name>
     <description>Spring JPA demo to jar artifact</description>
 
     <properties>
