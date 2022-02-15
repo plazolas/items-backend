@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.oz</groupId>
-    <artifactId>demojar</artifactId>
+    <artifactId>items-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demojar</name>
     <description>Spring JPA demo to jar artifact</description>
