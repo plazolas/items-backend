@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class PersonController {
 
-    private final String cors="http://www.ozdev.net";
+    private final String cors="http://ozdev.net";
     private final PersonService personService;
     private final CountryService countryService;
     //private final Validator validator;
