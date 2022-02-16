@@ -9,11 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.oz</groupId>
-    <artifactId>items-manager</artifactId>
+    <artifactId>items-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>items-manager</name>
-    <description>Spring JPA jar artifact</description>
-
+    <name>items-backend</name>
+    <description>Spring JPA backend items manager</description>
     <properties>
         <java.version>11</java.version>
         <spring.version>2.5.6</spring.version>
