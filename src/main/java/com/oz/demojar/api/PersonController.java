@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @RestController
 public class PersonController {
 
-    private final String cors="http://www.ozdev.net, http://localhost:4200";
+    private final String cors="http://ozdev.net";
     private final PersonService personService;
     private final CountryService countryService;
     private HttpServletRequest request;
