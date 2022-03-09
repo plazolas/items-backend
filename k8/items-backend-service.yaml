@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: items-backend-srvc
+  labels:
+    run: items-backend
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: items-backend
+  type: NodePort
