@@ -17,5 +17,5 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     Country findByName(String name);
 
     @Query(value = "SELECT * FROM country c WHERE id = ?1", nativeQuery = true)
-    public Country getRandomCountry(int id);
+    Country getRandomCountry(int id);
 }

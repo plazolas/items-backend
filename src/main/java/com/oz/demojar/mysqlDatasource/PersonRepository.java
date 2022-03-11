@@ -18,20 +18,20 @@ import java.util.List;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query(value = "SELECT * FROM person p WHERE p.first_name  = 'ann'", nativeQuery = true)
-    public Collection<Person> findAllAnns();
+    Collection<Person> findAllAnns();
 
     @Query(value = "SELECT * FROM person p WHERE p.country_id  = ?1 AND passport_id > 0",
             countQuery = "SELECT count(*) FROM person p WHERE p.country_id  = ?1 AND passport_id > 0",
             nativeQuery = true)
-    public Collection<Person> findPersonsWithPassportsByCountry(Long country_id);
+    Collection<Person> findPersonsWithPassportsByCountry(Long country_id);
 
     @Query(value = "SELECT * FROM person p WHERE p.id = ?1", nativeQuery = true)
-    public Person findRandomFirstName(int id);
+    Person findRandomFirstName(int id);
 
     @Query(value = "SELECT * FROM person p WHERE p.id = ?1", nativeQuery = true)
-    public Person findRandomLastName(int id);
+    Person findRandomLastName(int id);
 
     @Query(value = "SELECT MAX(id) FROM person", nativeQuery = true)
-    public long findLastId();
+    long findLastId();
 
 }
