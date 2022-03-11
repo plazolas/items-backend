@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: items-backend
+spec:
+  containers:
+    - image: docker.io/plazolas/items-backend
+      name: items-backend
+      imagePullPolicy: Always
+      resources: {}
+      ports:
+        - containerPort: 8080

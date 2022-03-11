@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: items-backend-d
+spec:
+  selector:
+    matchLabels:
+      run: items-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: items-backend
+    spec:
+      containers:
+      - name: items-backend
+        image: docker.io/plazolas/items-backend
+        imagePullPolicy: Always  
+        ports:
+        - containerPort: 8080
