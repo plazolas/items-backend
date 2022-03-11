@@ -1,23 +1,24 @@
 package com.oz.demojar.service;
 
+import com.oz.demojar.dao.PassportDao;
 import com.oz.demojar.dao.PersonDao;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 
-import com.oz.demojar.mysqlDatasource.CountryRepository;
 import com.oz.demojar.mysqlDatasource.PassportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import java.util.stream.Collectors;
-
 import javax.persistence.*;
-
 import java.util.*;
+
+/*
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.repository.PagingAndSortingRepository;
+ import java.util.stream.Collectors;
+*/
 
 @Service
 public class PersonService {
@@ -25,18 +26,16 @@ public class PersonService {
     @Qualifier("person")
     private final PersonDao personRepository;
 
+    @Qualifier("passport")
+    private final PassportDao passportRepository;
+
     @PersistenceContext
     private final EntityManager em;
 
     @Autowired
-    private PassportRepository passportRepository;
-
-    @Autowired
-    private CountryRepository countryRepository;
-
-    @Autowired
-    public PersonService(EntityManager entityManager, PersonDao personDao) {
+    public PersonService(EntityManager entityManager, PersonDao personDao, PassportDao passportDao) {
         this.personRepository = personDao;
+        this.passportRepository = passportDao;
         this.em = entityManager;
     }
 
@@ -45,8 +44,7 @@ public class PersonService {
     }
 
     public List<Person> getAllPeople() {
-        List<Person> persons = personRepository.selectAllPeople();
-        return persons;
+        return personRepository.selectAllPeople();
     }
 
     public Person getPersonById(Long id) {
@@ -90,8 +88,7 @@ public class PersonService {
             pageSize = Math.round(query.getMaxResults()/pageNumber) - 1;
             query.setMaxResults(pageSize);
         }
-        List<Person> personList = query.getResultList();
-        return personList;
+        return query.getResultList();
     }
 
     public List<Person> massUpdate() {
@@ -107,17 +104,16 @@ public class PersonService {
         ArrayList<Person> personList = new ArrayList<>();
         while(itr.hasNext()){
             Object[] obj = (Object[]) itr.next();
-            //now you have one array of Object for each row
+            // now you have one array of Object for each row
             Integer pid = Integer.parseInt(String.valueOf(obj[0]));
-            Integer c_id = Integer.parseInt(String.valueOf(obj[1]));
+            // Integer c_id = Integer.parseInt(String.valueOf(obj[1]));
             Integer pass_id = Integer.parseInt(String.valueOf(obj[2]));
 
             Long id = pid.longValue();
-            Long country_id = c_id.longValue();
             Long passport_id = pass_id.longValue();
 
             Person person = personRepository.getPersonById(id);
-            Passport passport = passportRepository.getById(passport_id);
+            Passport passport = passportRepository.getPassportById(passport_id);
 
             System.out.println(person);
             System.out.println(passport);
