@@ -2,13 +2,11 @@ package com.oz.demojar.service;
 
 import com.oz.demojar.dao.CountryDao;
 import com.oz.demojar.model.Country;
-import com.oz.demojar.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CountryService {
@@ -26,6 +24,6 @@ public class CountryService {
     }
 
     public Country getCountryById(Long id) {
-        return countryDao.getCountryById(id).get();
+        return (countryDao.getCountryById(id).isPresent()) ? countryDao.getCountryById(id).get() : null;
     }
 }
