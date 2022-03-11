@@ -40,8 +40,8 @@ class PersonDaoImpl implements PersonDao {
     @Override
     public Person addPerson(String firstName, String lastName, Country country) {
 
-        int persons[] = new int[] { 101, 102, 103, 104, 105, 115, 110, 111, 109, 112, 117, 118, 119, 90 };
-        int countries[]   = new int[] { 1, 2, 4, 6, 8, 19, 22, 24, 32, 33, 34 };
+        int[] persons = new int[] { 101, 102, 103, 104, 105, 115, 110, 111, 109, 112, 117, 118, 119, 90 };
+        int[] countries = new int[] { 1, 2, 4, 6, 8, 19, 22, 24, 32, 33, 34 };
 
         int index = getRandom(countries);
 
