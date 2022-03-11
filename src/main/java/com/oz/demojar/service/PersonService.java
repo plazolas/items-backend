@@ -13,20 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import java.util.stream.Collectors;
 
 import javax.persistence.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
 
     @Qualifier("person")
-    private PersonDao personRepository;
+    private final PersonDao personRepository;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Autowired
     private PassportRepository passportRepository;
