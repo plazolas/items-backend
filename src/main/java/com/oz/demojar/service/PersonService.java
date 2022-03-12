@@ -6,7 +6,6 @@ import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 
-import com.oz.demojar.mysqlDatasource.PassportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -99,11 +98,10 @@ public class PersonService {
 //        "Select p.id as pid, p.country_id pcid, t.id as pid, t.country_id as tcid from person p, passport t where p.passport_id = t.id " +
 //                "and p.country_id != t.country_id");
 
-        List<Object> result = (List<Object>) queryPersons.getResultList();
-        Iterator itr = result.iterator();
+        List<Object> result = (List<Object>) queryPersons.getResultList();;
         ArrayList<Person> personList = new ArrayList<>();
-        while(itr.hasNext()){
-            Object[] obj = (Object[]) itr.next();
+        while(result.iterator().hasNext()){
+            Object[] obj = (Object[]) result.iterator().next();
             // now you have one array of Object for each row
             Integer pid = Integer.parseInt(String.valueOf(obj[0]));
             // Integer c_id = Integer.parseInt(String.valueOf(obj[1]));
