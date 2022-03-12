@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  import org.springframework.data.domain.Page;
@@ -74,20 +76,23 @@ public class PersonService {
         return personRepository.findPersonsWithPassportsByCountry(id);
     }
 
-    public long findLast() {
-        return personRepository.findLastId();
-    }
-
     public List<Person> findPaginated(int pageNumber, int pageSize) {
         if (pageNumber == 0) pageNumber = 1;
         Query query = em.createQuery("From Person");
         query.setFirstResult((pageNumber-1) * pageSize);
         query.setMaxResults(pageSize);
-        if (pageSize > query.getMaxResults()/pageNumber) {
+        if (query.getMaxResults() > 0 && pageSize > query.getMaxResults()/pageNumber) {
             pageSize = Math.round(query.getMaxResults()/pageNumber) - 1;
             query.setMaxResults(pageSize);
         }
-        return query.getResultList();
+        // List<Person> lp =  r.stream().map(p -> p = (Person) p).collect(Collectors.toList());
+        List result = query.getResultList();
+        ArrayList<Person> personList = new ArrayList<>();
+        while(result.iterator().hasNext()){
+            Person p = (Person) result.iterator().next();
+            personList.add(p);
+        }
+        return personList;
     }
 
     public List<Person> massUpdate() {
@@ -98,17 +103,14 @@ public class PersonService {
 //        "Select p.id as pid, p.country_id pcid, t.id as pid, t.country_id as tcid from person p, passport t where p.passport_id = t.id " +
 //                "and p.country_id != t.country_id");
 
-        List<Object> result = (List<Object>) queryPersons.getResultList();;
+        List result = queryPersons.getResultList();
         ArrayList<Person> personList = new ArrayList<>();
         while(result.iterator().hasNext()){
             Object[] obj = (Object[]) result.iterator().next();
             // now you have one array of Object for each row
-            Integer pid = Integer.parseInt(String.valueOf(obj[0]));
-            // Integer c_id = Integer.parseInt(String.valueOf(obj[1]));
-            Integer pass_id = Integer.parseInt(String.valueOf(obj[2]));
-
-            Long id = pid.longValue();
-            Long passport_id = pass_id.longValue();
+            Long id = Long.parseLong(String.valueOf(obj[0]));
+            Long passport_id = Long.parseLong(String.valueOf(obj[2]));
+            // Long c_id = Long.parseLong(String.valueOf(obj[1]));
 
             Person person = personRepository.getPersonById(id);
             Passport passport = passportRepository.getPassportById(passport_id);
