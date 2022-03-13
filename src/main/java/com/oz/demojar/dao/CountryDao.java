@@ -1,7 +1,6 @@
 package com.oz.demojar.dao;
 
 import com.oz.demojar.model.Country;
-import com.oz.demojar.model.Person;
 
 import java.util.List;
 import java.util.Optional;
