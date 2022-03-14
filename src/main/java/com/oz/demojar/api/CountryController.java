@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -60,7 +61,9 @@ public class CountryController {
     // consider subclassing ExceptionHandlerExceptionResolver (see below).
     @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
                         DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
-    public ResponseEntity<Object> handleError(Exception ex) {
+    public ResponseEntity<Object> handleError(HttpServletRequest req, Exception ex) {
+
+        System.out.println( "Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
 
         Class<?> c = ex.getClass();
         String fullClassName = c.getName();
@@ -70,7 +73,8 @@ public class CountryController {
         HttpStatus httpStatus;
         switch (exName) {
             case "InvalidDataAccessApiUsageException":
-                httpStatus = HttpStatus.NOT_ACCEPTABLE;
+            case "MethodArgumentTypeMismatchException":
+                httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case "DataIntegrityViolationException":
                 httpStatus = HttpStatus.CONFLICT;
