@@ -35,46 +35,6 @@ public class PersonController {
     private final CountryService countryService;
     private final HttpServletRequest request;
     //private final Validator validator;
-    
-    public String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_FORWARDED");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_FORWARDED");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_VIA");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("REMOTE_ADDR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getRemoteAddr();
-        }
-        if (ip.equals("0:0:0:0:0:0:0:1")) ip = "127.0.0.1";
-        if (ip.chars().filter($ -> $ == '.').count() != 3) ip = "Illegal IP";
-        return ip;
-    }
 
     @Autowired
     public PersonController(PersonService personService, CountryService countryService, HttpServletRequest httpRequest) {
@@ -115,8 +75,6 @@ public class PersonController {
 
     @GetMapping(path = "{id}")
     public Person selectPersonById(@PathVariable("id") Long id) {
-        if(id.equals("undefined")) { System.out.println("undefined");return null; }
-        System.out.println(id);
         return personService.getPersonById(id);
     }
 
@@ -170,5 +128,45 @@ public class PersonController {
         Long id = personService.findLastId();
         System.out.println();
         return id;
+    }
+
+    public String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_X_FORWARDED");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_FORWARDED");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("HTTP_VIA");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getHeader("REMOTE_ADDR");
+        }
+        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip.equals("0:0:0:0:0:0:0:1")) ip = "127.0.0.1";
+        if (ip.chars().filter($ -> $ == '.').count() != 3) ip = "Illegal IP";
+        return ip;
     }
 }

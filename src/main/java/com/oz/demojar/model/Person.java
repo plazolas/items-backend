@@ -40,11 +40,11 @@ public class Person implements Serializable {
 
     @JsonProperty("age")
     @Column(nullable = true)
-    private int age;
+    private Integer age;
 
     @JsonProperty("boss")
     @Column(nullable = true)
-    private int boss;
+    private Integer boss;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="country_id", referencedColumnName = "id")

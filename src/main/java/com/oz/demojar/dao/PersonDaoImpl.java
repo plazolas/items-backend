@@ -38,7 +38,7 @@ class PersonDaoImpl implements PersonDao {
     private EntityManager em;
 
     @Override
-    public Person addPerson(String firstName, String lastName, Country country, String position, int age, int boss) {
+    public Person addPerson(String firstName, String lastName, Country country, String position, Integer age, Integer boss) {
 
 //        if(country.getId() != null) {
 //            c = countryRepository.getById(country.getId());
