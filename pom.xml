@@ -13,10 +13,32 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>items-backend</name>
     <description>Spring JPA backend items manager</description>
+
     <properties>
         <java.version>1.8</java.version>
         <slf4j.version>1.7.10</slf4j.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>ec2-3-211-223-79</id>
+            <name>items-manager-jar</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>scpexe://ec2-3-211-223-79.compute-1.amazonaws.com/home/ec2-user/dev/items-backend/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -96,6 +118,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -115,7 +143,38 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <executions>
+                    <execution>
+                        <id>upload-artifact</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <!--configuration>
+                            <repositoryId>ec2-3-211-223-79</repositoryId>
+                            <file>C:\Users\oplaz\dev\items-backend\target\items-backend-0.0.1-SNAPSHOT.jar</file>
+                            <url>scp://ec2-user@ec2-3-211-223-79.compute-1.amazonaws.com:/home/ec2-user/dev/items-backend/</url>
+                        </configuration-->
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
     </build>
 
 </project>
