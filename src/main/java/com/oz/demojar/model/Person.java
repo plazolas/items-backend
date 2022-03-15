@@ -2,15 +2,12 @@ package com.oz.demojar.model;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
-//import javax.xml.validation.Validator;  // deprecated
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,15 +25,26 @@ public class Person implements Serializable {
 
     @JsonProperty("firstname")
     @Column(nullable = false)
-    //@NotEmpty(message = "not empty")
+    // @NotEmpty(message = "not empty")
     @Size(min = 2, message = "at least 2 chars")
     private String firstName;
 
     @JsonProperty("lastname")
     @Column(nullable = false)
-    //@NotEmpty(message = "not empty")
     @Size(min = 2, message = "at least 2 chars")
     private String lastName;
+
+    @JsonProperty("position")
+    @Column(nullable = true)
+    private String position;
+
+    @JsonProperty("age")
+    @Column(nullable = true)
+    private int age;
+
+    @JsonProperty("boss")
+    @Column(nullable = true)
+    private int boss;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="country_id", referencedColumnName = "id")
@@ -49,10 +57,13 @@ public class Person implements Serializable {
 
     public Person() {}
 
-    public Person(String firstName, String lastName, Country country) {
+    public Person(String firstName, String lastName, Country country, String position, int age, int boss) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.country = country;
+        this.position = position;
+        this.age = age;
+        this.boss = boss;
     }
 
     public Person(String firstName, String lastName, Country country, Passport passport) {
@@ -60,6 +71,33 @@ public class Person implements Serializable {
         this.lastName = lastName;
         this.country = country;
         this.passport = passport;
+    }
+
+    public Person(String firstName, String lastName, Country country, Passport passport, String position) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.country = country;
+        this.passport = passport;
+        this.position = position;
+    }
+
+    public Person(String firstName, String lastName, Country country, Passport passport, String position, int age) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.country = country;
+        this.passport = passport;
+        this.position = position;
+        this.age = age;
+    }
+
+    public Person(String firstName, String lastName, Country country, Passport passport, String position, int age, int boss) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.country = country;
+        this.passport = passport;
+        this.position = position;
+        this.age = age;
+        this.boss = boss;
     }
 
     @Override
@@ -77,9 +115,13 @@ public class Person implements Serializable {
         return Objects.equals(this.id, other.id);
     }
 
+    public boolean isValid() {
+        return this.id != null && this.firstName != null && this.lastName != null;
+    }
+
     @Override
     public String toString() {
         return "Person{id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' +
-                ", country=" + country + ", passport=" + passport + '}';
+                ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + '}';
     }
 }

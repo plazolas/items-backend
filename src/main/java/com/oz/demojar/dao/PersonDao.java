@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PersonDao {
 
-    Person addPerson(String firstName, String lastName, Country country);
+    Person addPerson(String firstName, String lastName, Country country, String position, int age, int boss);
 
     List<Person> selectAllPeople();
 

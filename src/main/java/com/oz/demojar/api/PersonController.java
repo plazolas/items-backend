@@ -86,10 +86,11 @@ public class PersonController {
         //this.validator = factory.getValidator();
     }
 
-    @PostMapping  (consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping  (path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
 
-        Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(), person.getCountry());
+        Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(),
+                person.getCountry(), person.getPosition(), person.getAge(), person.getBoss());
         if(savedPerson instanceof Person) {
             return new ResponseEntity<Person>(savedPerson, HttpStatus.CREATED);
         } else {

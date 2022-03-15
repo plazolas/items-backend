@@ -3,8 +3,8 @@ package com.oz.demojar.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class Passport implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    //@Min(5) @Max(15)
+    // @Min(5) @Max(15)
     @Size(min = 4, max=15, message = "at least 2 chars")
     @NotBlank(message = "Passport number is mandatory")
     @Column(unique = true, nullable = false)

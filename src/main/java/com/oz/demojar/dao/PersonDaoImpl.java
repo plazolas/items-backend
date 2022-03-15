@@ -38,14 +38,8 @@ class PersonDaoImpl implements PersonDao {
     private EntityManager em;
 
     @Override
-    public Person addPerson(String firstName, String lastName, Country country) {
+    public Person addPerson(String firstName, String lastName, Country country, String position, int age, int boss) {
 
-        int[] persons = new int[] { 101, 102, 103, 104, 105, 115, 110, 111, 109, 112, 117, 118, 119, 90 };
-        int[] countries = new int[] { 1, 2, 4, 6, 8, 19, 22, 24, 32, 33, 34 };
-
-        int index = getRandom(countries);
-
-        Country c = countryRepository.getRandomCountry(index);
 //        if(country.getId() != null) {
 //            c = countryRepository.getById(country.getId());
 //        } else if (country.getName() != null) {
@@ -54,20 +48,13 @@ class PersonDaoImpl implements PersonDao {
 //            c = countryRepository.getById(19L);
 //        }
 
-        index = getRandom(persons);
-        Person ra = personRepository.findRandomFirstName(index);
-        firstName = ra.getFirstName();
-        index = getRandom(persons);
-        ra  = personRepository.findRandomLastName(index);
-        lastName = ra.getLastName();
-
         try {
-            Person person = new Person(firstName, lastName, c);
+            Person person = new Person(firstName, lastName, country, position, age, boss);
             Person newPerson = personRepository.save(person);
-            System.out.println(newPerson);
+            System.out.println("PersonDaoImpl: "+newPerson);
             return newPerson;
         } catch (ConstraintViolationException e) {
-            Set<ConstraintViolation<?>> errors = new HashSet<>();
+            Set<ConstraintViolation<?>> errors;
             errors = e.getConstraintViolations();
             errors.forEach(error -> {
                 String fieldName = ((FieldError) error).getField();
@@ -141,7 +128,7 @@ class PersonDaoImpl implements PersonDao {
     @Override
     public Person updatePersonById(Long id, Person person) {
         Passport pass = null;
-        Passport newPass = null;
+        Passport newPass;
         Country country = person.getCountry();
         System.out.println(person);
         Person oldPerson = personRepository.getById(id);
@@ -155,7 +142,7 @@ class PersonDaoImpl implements PersonDao {
         }
         person.setId(0L);
         System.out.println(oldPerson);
-        if(!(oldPerson instanceof Person)) { return null; }
+        if(!oldPerson.isValid()) { return null; }
         else {
             if((oldPerson.getCountry() != null && person.getCountry() != null ) &&
                (person.getCountry().getId() != null && oldPerson.getCountry().getId() != null) &&
@@ -228,11 +215,6 @@ class PersonDaoImpl implements PersonDao {
 
     public long findLastId() {
         return personRepository.findLastId();
-    }
-
-    private int getRandom(int[] array) {
-        int rnd = new Random().nextInt(array.length);
-        return array[rnd];
     }
 
 }

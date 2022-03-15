@@ -40,8 +40,8 @@ public class PersonService {
         this.em = entityManager;
     }
 
-    public Person addPerson(String firstName, String lastName, Country country) {
-        return personRepository.addPerson(firstName, lastName, country);
+    public Person addPerson(String firstName, String lastName, Country country, String position, int age, int boss) {
+        return personRepository.addPerson(firstName, lastName, country, position, age, boss);
     }
 
     public List<Person> getAllPeople() {

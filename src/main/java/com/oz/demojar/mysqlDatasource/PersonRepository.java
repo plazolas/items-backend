@@ -25,12 +25,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             nativeQuery = true)
     Collection<Person> findPersonsWithPassportsByCountry(Long country_id);
 
-    @Query(value = "SELECT * FROM person p WHERE p.id = ?1", nativeQuery = true)
-    Person findRandomFirstName(int id);
-
-    @Query(value = "SELECT * FROM person p WHERE p.id = ?1", nativeQuery = true)
-    Person findRandomLastName(int id);
-
     @Query(value = "SELECT MAX(id) FROM person", nativeQuery = true)
     long findLastId();
 
