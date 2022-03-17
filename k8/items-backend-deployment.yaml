@@ -16,5 +16,11 @@ spec:
       - name: items-backend
         image: docker.io/plazolas/items-backend
         imagePullPolicy: Always  
+        env: 
+          - name: APP_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password  
         ports:
         - containerPort: 8080
