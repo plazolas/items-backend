@@ -8,5 +8,11 @@ spec:
       name: items-backend
       imagePullPolicy: Always
       resources: {}
+      env:
+        - name: APP_DB_PASSWORD
+          ValueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
       ports:
         - containerPort: 8080

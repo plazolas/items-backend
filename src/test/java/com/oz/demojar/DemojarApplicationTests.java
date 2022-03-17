@@ -52,7 +52,7 @@ class DemojarApplicationTests {
 	@DisplayName("All items should be fetched")
 	void testGetAllItems() {
 		List<Person> person = this.personService.getAllPeople();
-		assertEquals(57, person.size(),
+		assertEquals(61, person.size(),
 				"All items were included");
 	}
 
