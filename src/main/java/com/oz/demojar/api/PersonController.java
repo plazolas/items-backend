@@ -2,8 +2,10 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
+import com.oz.demojar.model.User;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
+import com.oz.demojar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,13 +35,18 @@ public class PersonController {
     private final String cors="http://www.ozdev.net";
     private final PersonService personService;
     private final CountryService countryService;
+    private final UserService userService;
     private final HttpServletRequest request;
     //private final Validator validator;
 
     @Autowired
-    public PersonController(PersonService personService, CountryService countryService, HttpServletRequest httpRequest) {
+    public PersonController(PersonService personService,
+                            CountryService countryService,
+                            UserService userService,
+                            HttpServletRequest httpRequest) {
         this.personService = personService;
         this.countryService = countryService;
+        this.userService = userService;
         this.request = httpRequest;
 
         //ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -130,6 +137,22 @@ public class PersonController {
         return id;
     }
 
+    @GetMapping(value="/ping")
+    public String ping() {
+        return "pong";
+    }
+
+    @PostMapping(value="/account")
+    public SignupResponse postAccount(HttpServletResponse response, @RequestParam(value="username") String username, @RequestParam(value="password") String password) {
+        try {
+            userService.saveUser(new User(username, password));
+            return new SignupResponse("Account was successfully created.", true);
+        } catch(Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return new SignupResponse("An error occoured while creating your account.", false);
+        }
+    }
+
     public String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
@@ -168,5 +191,32 @@ public class PersonController {
         if (ip.equals("0:0:0:0:0:0:0:1")) ip = "127.0.0.1";
         if (ip.chars().filter($ -> $ == '.').count() != 3) ip = "Illegal IP";
         return ip;
+    }
+
+    public class SignupResponse {
+        private String message;
+        private boolean success;
+
+        public SignupResponse(String message, boolean success) {
+            super();
+            this.message = message;
+            this.success = success;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public void setSuccess(boolean success) {
+            this.success = success;
+        }
     }
 }
