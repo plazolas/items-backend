@@ -1,7 +1,9 @@
 package com.oz.demojar.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 
@@ -11,12 +13,14 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonProperty("username")
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
+    @JsonProperty("password")
     @Column(name = "password")
     private String password;
 
@@ -40,7 +44,13 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // default strength=10
+        this.password = encoder.encode(password);
+    }
+
+    public boolean matchPassword(String rawPassword) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(rawPassword, password);
     }
 
     public Long getId() {
