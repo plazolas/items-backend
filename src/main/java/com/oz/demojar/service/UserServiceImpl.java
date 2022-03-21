@@ -26,7 +26,11 @@ class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUs
         return (userRepo.getUserById(id).isPresent()) ? userRepo.getUserById(id).get() : null;
     }
 
-    public void saveUser(User user){
+    public User getUserByUsername(String username) {
+        return (userRepo.getUserByUsername(username).isPresent()) ? userRepo.getUserByUsername(username).get() : null;
+    }
+
+    public void saveUser(User user) {
         userRepo.save(user);
     }
 }

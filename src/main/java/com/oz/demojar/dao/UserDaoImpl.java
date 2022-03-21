@@ -42,7 +42,8 @@ class UserDaoImpl implements UserDao {
     }
 
     public void save(User user) {
-        userRepository.save(user);
+        User newUser = userRepository.save(user);
+        System.out.println(newUser.getId().toString() + newUser.getUsername() + newUser.getPassword());
     }
 
 }

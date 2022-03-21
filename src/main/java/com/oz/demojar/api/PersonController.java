@@ -6,6 +6,7 @@ import com.oz.demojar.model.User;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
+import com.oz.demojar.utils.GetIpAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @RestController
 public class PersonController {
 
-    private final String cors="http://www.ozdev.net";
+    private final String cors = "http://www.ozdev.net";
     private final PersonService personService;
     private final CountryService countryService;
     private final UserService userService;
@@ -53,12 +54,12 @@ public class PersonController {
         //this.validator = factory.getValidator();
     }
 
-    @PostMapping  (path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
 
         Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(),
                 person.getCountry(), person.getPosition(), person.getAge(), person.getBoss());
-        if(savedPerson instanceof Person) {
+        if (savedPerson instanceof Person) {
             return new ResponseEntity<Person>(savedPerson, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Person>(HttpStatus.BAD_REQUEST);
@@ -67,7 +68,8 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getAllPeople() {
-	String ip = this.getIpAddress(this.request);    
+
+        String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
         List<Person> persons = personService.getAllPeople();
         return persons;
@@ -98,7 +100,7 @@ public class PersonController {
     @PutMapping(path = "/p/{pid}/c/{cid}")
     @CrossOrigin(origins = cors)
     public int addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
-        Person  p = personService.getPersonById(pid);
+        Person p = personService.getPersonById(pid);
         Country c = countryService.getCountryById(cid);
         if (p == null || c == null) {
             personService.addPersonToCountry(p, c);
@@ -108,19 +110,19 @@ public class PersonController {
         }
     }
 
-    @PutMapping  (path="bycountry/{cid}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "bycountry/{cid}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> getPeopleByCountry(@PathVariable("cid") Long cid) {
-        System.out.println("cid :"+cid);
+        System.out.println("cid :" + cid);
         Collection<Person> persons = personService.findPersonsWithPassportsByCountry(cid);
         return persons.stream().collect(Collectors.toList());
     }
 
-    @GetMapping(params = { "page", "size" })
+    @GetMapping(params = {"page", "size"})
     public List<Person> findPaginated(@RequestParam("page") int page,
-                                   @RequestParam("size") int size,
-                                   UriComponentsBuilder uriBuilder,
-                                   HttpServletResponse response) {
-        List<Person> resultPage = personService.findPaginated(page,size);
+                                      @RequestParam("size") int size,
+                                      UriComponentsBuilder uriBuilder,
+                                      HttpServletResponse response) {
+        List<Person> resultPage = personService.findPaginated(page, size);
         return resultPage;
     }
 
@@ -142,55 +144,23 @@ public class PersonController {
         return "pong";
     }
 
+    @GetMapping(value="/ping/{pathVar}")
+    public PongMessage ping(@PathVariable Long pathVar,
+                            @RequestParam(value="param", defaultValue="defaultParam") String param) {
+        return new PongMessage(String.format("pong: %d, %s", pathVar, param));
+    }
+
     @PostMapping(value="/account")
-    public SignupResponse postAccount(HttpServletResponse response, @RequestParam(value="username") String username, @RequestParam(value="password") String password) {
+    public SignupResponse postAccount(HttpServletResponse response,
+                                      @RequestParam(value="username") String username,
+                                      @RequestParam(value="password") String password) {
         try {
             userService.saveUser(new User(username, password));
             return new SignupResponse("Account was successfully created.", true);
         } catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return new SignupResponse("An error occoured while creating your account.", false);
+            return new SignupResponse("An error occurred while creating your account.", false);
         }
-    }
-
-    public String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_FORWARDED");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_FORWARDED");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("HTTP_VIA");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getHeader("REMOTE_ADDR");
-        }
-        if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-            ip = request.getRemoteAddr();
-        }
-        if (ip.equals("0:0:0:0:0:0:0:1")) ip = "127.0.0.1";
-        if (ip.chars().filter($ -> $ == '.').count() != 3) ip = "Illegal IP";
-        return ip;
     }
 
     public class SignupResponse {
@@ -217,6 +187,22 @@ public class PersonController {
 
         public void setSuccess(boolean success) {
             this.success = success;
+        }
+    }
+
+    public class PongMessage {
+        private String message;
+
+        public PongMessage(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
         }
     }
 }
