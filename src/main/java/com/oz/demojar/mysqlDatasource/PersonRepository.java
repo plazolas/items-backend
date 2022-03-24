@@ -11,10 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Collection;
 import java.util.List;
 
-// This will be AUTO IMPLEMENTED by Spring into a Bean called MysqlDataSource
-// CRUD refers Create, Read, Update, Delete
-
-//@EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
+@EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query(value = "SELECT * FROM person p WHERE p.first_name  = 'ann'", nativeQuery = true)

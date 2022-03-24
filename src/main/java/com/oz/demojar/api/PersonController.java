@@ -3,6 +3,8 @@ package com.oz.demojar.api;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
+import com.oz.demojar.security.ObjectEncryption;
+import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
@@ -21,10 +23,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
+import java.security.Key;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +48,9 @@ public class PersonController {
     //private final Validator validator;
 
     @Autowired
+    private StartupProperties startupProperties;
+
+    @Autowired
     public PersonController(PersonService personService,
                             CountryService countryService,
                             UserService userService,
@@ -54,9 +64,20 @@ public class PersonController {
         //this.validator = factory.getValidator();
     }
 
+//    @GetMapping(path = "/genadmin")
+//    public ResponseEntity<User> genAdmin() {
+//
+//        User newAdmin = new User(startupProperties.getUsername(), startupProperties.getPassword(), "ROLE_ADMIN" );
+//        try {
+//            userService.createAdminUser(newAdmin);
+//            return new ResponseEntity<User>(newAdmin, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
-
         Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(),
                 person.getCountry(), person.getPosition(), person.getAge(), person.getBoss());
         if (savedPerson instanceof Person) {
@@ -68,7 +89,6 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getAllPeople() {
-
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
         List<Person> persons = personService.getAllPeople();
@@ -140,8 +160,29 @@ public class PersonController {
     }
 
     @GetMapping(value="/ping")
-    public String ping() {
-        return "pong";
+    public SealedObject ping() throws NoSuchPaddingException, NoSuchAlgorithmException {
+        User user = userService.getUserById(175L);
+
+        SealedObject sealedObject = null;
+        String algorithm = "AES";
+
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(128);
+        SecretKey key = keyGenerator.generateKey();
+
+        // Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");     // only CBC mode supports iv
+
+        byte[] iv = new byte[128/8];
+        Random random = new Random();
+        random.nextBytes(iv);
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        try {
+            sealedObject = ObjectEncryption.encryptObject(algorithm, user, key, ivSpec);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return sealedObject;
     }
 
     @GetMapping(value="/ping/{pathVar}")
@@ -155,8 +196,8 @@ public class PersonController {
                                       @RequestParam(value="username") String username,
                                       @RequestParam(value="password") String password) {
         try {
-            userService.saveUser(new User(username, password));
-            return new SignupResponse("Account was successfully created.", true);
+            userService.saveUser(new User(username, password, "ROLE_ADMIN, ROLE_USER"));
+            return new SignupResponse("Created user "+ username, true);
         } catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new SignupResponse("An error occurred while creating your account.", false);

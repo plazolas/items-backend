@@ -46,5 +46,9 @@ class UserDaoImpl implements UserDao {
         System.out.println(newUser.getId().toString() + newUser.getUsername() + newUser.getPassword());
     }
 
+    public long findLastId() {
+        return userRepository.findLastId();
+    }
+
 }
 

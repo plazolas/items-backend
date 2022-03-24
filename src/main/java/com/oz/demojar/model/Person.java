@@ -13,10 +13,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name="person")
 @Getter
 @Setter
 @JsonSerialize
+@Table(name="person")
 public class Person implements Serializable {
 
     @Id

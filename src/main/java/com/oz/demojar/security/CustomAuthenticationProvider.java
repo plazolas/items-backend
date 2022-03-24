@@ -7,9 +7,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -25,13 +28,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if(username == null || password == null) {
             return null;
         }
-
         try {
             User user = userService.getUserByUsername(username);
-            if(user.matchPassword(password)) {
-                return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
+            if(user.isActive() && user.matchPassword(password)) {
+                List<SimpleGrantedAuthority> roles = Arrays.stream(user.getRoles().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+                return new UsernamePasswordAuthenticationToken(username, password, roles);
             }
         } catch(Exception e) {
+            System.out.println("CustomAuthenticationProvider: Error");
             // user does not exist in db
         }
         return null;

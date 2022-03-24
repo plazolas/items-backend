@@ -4,6 +4,7 @@ import com.oz.demojar.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -15,4 +16,6 @@ public interface UserService {
     void saveUser(User user);
 
     User getUserByUsername(String username);
+
+    User createAdminUser(User user);
 }

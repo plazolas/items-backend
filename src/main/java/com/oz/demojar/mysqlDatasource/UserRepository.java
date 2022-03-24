@@ -10,8 +10,11 @@ import java.util.Optional;
 @EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUsername(String name);
+    Optional<User> findByUsername(String userName);
 
     @Query(value = "SELECT id FROM User ORDER BY RAND() LIMIT 1", nativeQuery = true)
     User getRandomUser(int id);
+
+    @Query(value = "SELECT MAX(id) FROM user", nativeQuery = true)
+    long findLastId();
 }
