@@ -22,7 +22,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             nativeQuery = true)
     Collection<Person> findPersonsWithPassportsByCountry(Long country_id);
 
-    @Query(value = "SELECT MAX(id) FROM person", nativeQuery = true)
+    @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
     long findLastId();
 
 }

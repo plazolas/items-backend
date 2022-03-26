@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT id FROM User ORDER BY RAND() LIMIT 1", nativeQuery = true)
     User getRandomUser(int id);
 
-    @Query(value = "SELECT MAX(id) FROM user", nativeQuery = true)
+    @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
     long findLastId();
 }

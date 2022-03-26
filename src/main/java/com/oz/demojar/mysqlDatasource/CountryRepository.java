@@ -18,4 +18,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 
     @Query(value = "SELECT * FROM country c WHERE id = ?1", nativeQuery = true)
     Country getRandomCountry(int id);
+
+    @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
+    long findLastId();
 }
