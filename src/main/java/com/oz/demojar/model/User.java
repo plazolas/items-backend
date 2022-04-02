@@ -8,10 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Getter
 @Setter
@@ -42,38 +45,35 @@ public class User implements Serializable  {
     public User(){}
 
     public User(String username, String password, String roles) {
+        setId(0L);
         setUsername(username);
         setPassword(password);
+        setActive(true);
         setRoles(roles);
     }
     public User(String username, String password, boolean active, String roles) {
+        setId(0L);
         setUsername(username);
         setPassword(password);
         setActive(active);
         setRoles(roles);
     }
     public User(Long id, String username, String password, boolean active, String roles) {
+        setId(id);
         setUsername(username);
         setPassword(password);
         setActive(active);
         setRoles(roles);
-        setId(id);
     }
 
-    public void setPassword(String password) {
+    public String getEncryptPassword(String password) {
         BCryptPasswordEncoder encoder = bCryptPasswordEncoder(); // default strength=10
-        this.password = encoder.encode(password);
+        return encoder.encode(password);
     }
 
     public boolean matchPassword(String rawPassword) {
-        BCryptPasswordEncoder encoder = bCryptPasswordEncoder();
-        // TODO: FIX  encoder.matches
-        boolean tmp = encoder.matches(rawPassword, this.getPassword());
-        return tmp || rawPassword.equals("y6u7i8o9");
-    }
-
-    public Long getId() {
-        return id;
+        BCryptPasswordEncoder encoder = bCryptPasswordEncoder(); // default strength=10
+        return bCryptPasswordEncoder().matches(rawPassword, this.getPassword());
     }
 
     @Override
@@ -85,5 +85,10 @@ public class User implements Serializable  {
     @Bean
     public static BCryptPasswordEncoder  bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2A);
+    }
+
+    @Bean
+    public static BCrypt bCrypt() {
+        return new BCrypt();
     }
 }

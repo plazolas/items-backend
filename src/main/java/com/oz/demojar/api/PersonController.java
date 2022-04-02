@@ -113,6 +113,11 @@ public class PersonController {
     }
 
     @PutMapping(path = "{id}")
+    public boolean updatePersonByIdShort(@PathVariable("id") Long id, @RequestBody Person person) {
+        return personService.updatePersonByIdShort(id, person);
+    }
+
+    @PutMapping(path = "/p/{id}")
     public Person updatePersonById(@PathVariable("id") Long id, @RequestBody Person person) {
         return personService.updatePersonById(id, person);
     }
@@ -160,29 +165,29 @@ public class PersonController {
     }
 
     @GetMapping(value="/ping")
-    public SealedObject ping() throws NoSuchPaddingException, NoSuchAlgorithmException {
-        User user = userService.getUserById(175L);
+    public String ping() throws NoSuchPaddingException, NoSuchAlgorithmException {
+//        User user = userService.getUserById(175L);
+//
+//        SealedObject sealedObject = null;
+//        String algorithm = "AES";
+//
+//        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+//        keyGenerator.init(128);
+//        SecretKey key = keyGenerator.generateKey();
+//
+//        // Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");     // only CBC mode supports iv
+//
+//        byte[] iv = new byte[128/8];
+//        Random random = new Random();
+//        random.nextBytes(iv);
+//        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+//        try {
+//            sealedObject = ObjectEncryption.encryptObject(algorithm, user, key, ivSpec);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
 
-        SealedObject sealedObject = null;
-        String algorithm = "AES";
-
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(128);
-        SecretKey key = keyGenerator.generateKey();
-
-        // Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");     // only CBC mode supports iv
-
-        byte[] iv = new byte[128/8];
-        Random random = new Random();
-        random.nextBytes(iv);
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-        try {
-            sealedObject = ObjectEncryption.encryptObject(algorithm, user, key, ivSpec);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return sealedObject;
+        return "pong";
     }
 
     @GetMapping(value="/ping/{pathVar}")
@@ -196,7 +201,14 @@ public class PersonController {
                                       @RequestParam(value="username") String username,
                                       @RequestParam(value="password") String password) {
         try {
-            userService.saveUser(new User(username, password, "ROLE_ADMIN, ROLE_USER"));
+            User newUser = User.builder()
+                    .username(username)
+                    .password(password)
+                    .active(true)
+                    .roles("ROLE_ADMIN, ROLE_USER")
+                    .build();
+            newUser.setPassword(newUser.getEncryptPassword(password));
+            userService.saveUser(newUser);
             return new SignupResponse("Created user "+ username, true);
         } catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -45,7 +45,7 @@ class PassportDaoImpl implements PassportDao {
     @Override
     public int deletePassportById(Long id) {
         Passport passport = getPassportById(id);
-        if(passport == null){
+        if(passport == null) {
             return 0;
         } else {
             passportRepository.delete(passport);
@@ -61,6 +61,10 @@ class PassportDaoImpl implements PassportDao {
     public Passport setPersonToPassport(Passport passport, Person person) {
         passport.setPerson(person);
         return passportRepository.save(passport);
+    }
+
+    public long findLastId() {
+        return passportRepository.findLastId();
     }
 
 }

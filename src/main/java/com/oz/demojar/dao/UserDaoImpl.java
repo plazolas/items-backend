@@ -43,7 +43,7 @@ class UserDaoImpl implements UserDao {
 
     public void save(User user) {
         User newUser = userRepository.save(user);
-        System.out.println(newUser.getId().toString() + newUser.getUsername() + newUser.getPassword());
+        System.out.println(newUser.getId().toString() + " | " + newUser.getUsername() + " | " + newUser.getPassword());
     }
 
     public long findLastId() {

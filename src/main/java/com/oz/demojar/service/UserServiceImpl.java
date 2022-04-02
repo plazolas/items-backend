@@ -4,6 +4,7 @@ import com.oz.demojar.dao.UserDao;
 import com.oz.demojar.model.User;
 import com.oz.demojar.security.StartupProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
 
-    private BCryptPasswordEncoder encoder = User.bCryptPasswordEncoder();
+    private BCrypt bCrypt = User.bCrypt();
 
     @Autowired
     StartupProperties startupProperties;
@@ -40,7 +41,7 @@ class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUs
     public void saveUser(User user) {
         userRepo.save(User.builder()
                 .username(user.getUsername())
-                .password(encoder.encode(user.getPassword()))
+                .password(user.getPassword())
                 .active(true)
                 .roles(user.getRoles())
                 .build());
@@ -49,11 +50,11 @@ class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUs
     public User createAdminUser(User user) {
         userRepo.save(User.builder()
                 .username(user.getUsername())
-                .password(encoder.encode(user.getPassword()))
+                .password(user.getPassword())
                 .active(true)
                 .roles(user.getRoles())
                 .build());
-        Long id = userRepo.findLastId();
+        Long id = userRepo.findLastId() + 1L;
         user.setId(id);
         return user;
     }

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
 public interface PassportRepository extends JpaRepository<Passport, Long> {
-    @Query(value = "SELECT next_val FROM person.hibernate_sequence", nativeQuery = true)
+    @Query(value = "SELECT MAX(id) FROM person.password", nativeQuery = true)
     long findLastId();
 
 }

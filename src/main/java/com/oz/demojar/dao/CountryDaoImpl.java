@@ -48,5 +48,9 @@ class CountryDaoImpl implements CountryDao {
         return countryRepository.findByName(name);
     }
 
+    public long findLastId() {
+        return countryRepository.findLastId();
+    }
+
 }
 

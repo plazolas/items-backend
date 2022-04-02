@@ -125,6 +125,12 @@ class PersonDaoImpl implements PersonDao {
         }
     }
 
+    public boolean updatePersonByIdShort(Long id, Person person) {
+        Object p = personRepository.updateShortById(person.getLastName(), person.getFirstName(), id);
+        System.out.println(p.toString());
+        return (p.getClass() == Person.class);
+    }
+
     @Override
     public Person updatePersonById(Long id, Person person) {
         Passport pass = null;

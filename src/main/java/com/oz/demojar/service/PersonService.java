@@ -64,6 +64,10 @@ public class PersonService {
         return personRepository.updatePersonById(id, p);
     }
 
+    public boolean updatePersonByIdShort(Long id, Person p) {
+        return personRepository.updatePersonByIdShort(id, p);
+    }
+
     public void addPersonToCountry(Person p, Country c) {
         personRepository.addPersonToCountry(p,c);
     }

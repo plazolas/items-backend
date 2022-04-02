@@ -18,6 +18,8 @@ public interface PersonDao {
 
     Person updatePersonById(Long id, Person person);
 
+    boolean updatePersonByIdShort(Long id, Person person);
+
     Person getPersonById(Long id);
 
     void addPersonToCountry(Person p, Country c);
