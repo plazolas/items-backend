@@ -6,9 +6,9 @@ metadata:
     run: items-backend
 spec:
   ports:
-  - port: 8080
+  - port: 8077
     protocol: TCP
-    targetPort: 8080
+    targetPort: 8077
   selector:
     app: items-backend
-  type: NodePort
+  type: LoadBalancer
