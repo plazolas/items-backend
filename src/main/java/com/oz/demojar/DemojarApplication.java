@@ -13,18 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class DemojarApplication {
 
-	@Autowired
-	private PersonRepository personRepository;
-
-	@Autowired
-	private CountryRepository countryRepository;
-
-	@Autowired
-	private PassportRepository passportRepository;
-
-	@Autowired
-	private UserRepository userRepository;
-
 	public static void main(String[] args) {
 		SpringApplication.run(DemojarApplication.class, args);
 	}
