@@ -2,6 +2,7 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.model.Country;
 import com.oz.demojar.service.CountryService;
+import net.minidev.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping("api/vi/country")
 @RestController
@@ -37,6 +38,48 @@ public class CountryController {
             throw new Exception("no country found for id: " + id);
         }
         return country;
+    }
+
+    @GetMapping(path = "/test")
+    public String testCountries() {
+        String str = "the number of Number Random that fits is a fits at random random order";
+        String str1 = str.toLowerCase(Locale.ROOT);
+        String[] words = str1.split(" ");
+
+        HashMap<String,Integer> map = new HashMap<>();
+        ArrayList<String> inWords = new ArrayList<>();
+        for(int i = words.length - 1; i >= 0; i--) {
+            if(map.containsKey(words[i])) {
+                int count = map.get(words[i]);
+                map.put(words[i], count + 1);
+            } else {
+                map.put(words[i], 1);
+                inWords.add(words[i]);
+            }
+        }
+
+        str = "sssssakkkettreeere";
+        String r = "";
+        int count = 0;
+        try {
+            char[] chars = str.toCharArray();
+            HashMap<Character, Integer> resultMap = null;
+            for (int i = 0; i < str.length(); i++) {
+                count = 0;
+                for (int j = 1; j < str.length(); j++) {
+                    if (chars[i] == chars[j]) {
+                        System.out.println();
+                        resultMap.put(chars[i], ++count);
+                    }
+                }
+                r = resultMap.toString();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return r;
     }
 
 //    // Convert a predefined exception to an HTTP Status code

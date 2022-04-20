@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
+final class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
 
     private BCrypt bCrypt = User.bCrypt();
 

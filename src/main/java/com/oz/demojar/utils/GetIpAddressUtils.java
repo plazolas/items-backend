@@ -2,7 +2,7 @@ package com.oz.demojar.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class GetIpAddressUtils {
+final public class GetIpAddressUtils {
 
     public static String getIpAddress(HttpServletRequest request) {
 

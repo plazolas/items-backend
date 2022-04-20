@@ -95,6 +95,11 @@ public class PersonController {
         return persons;
     }
 
+    @GetMapping(path = "/search/{term}")
+    public List<String> getItemsBySearchTerm(@PathVariable("term") String term ) {
+        return personService.searchAllItems(term);
+    }
+
     @CrossOrigin(origins = cors)
     @GetMapping(path = "/anns")
     public List<Person> getAllAnns() {

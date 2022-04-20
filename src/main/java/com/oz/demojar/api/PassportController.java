@@ -39,7 +39,7 @@ public class PassportController {
     }
 
     @GetMapping(path = "{id}")
-    public Passport selectPassportById(@PathVariable("id") String id) {
+    public Passport getPassportById(@PathVariable("id") String id) {
         Long lid = Long.getLong(id);
         return passportService.selectPassportById(lid);
     }

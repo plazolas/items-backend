@@ -52,9 +52,7 @@ public class PersonService {
         return personRepository.getPersonById(id);
     }
 
-    public long findLastId() {
-        return personRepository.findLastId();
-    }
+    public long findLastId() { return personRepository.findLastId(); }
 
     public int deletePersonById(Long id) {
         return personRepository.deletePersonById(id);
@@ -100,14 +98,14 @@ public class PersonService {
     }
 
     public List<Person> massUpdate() {
-        Query queryPersons = em.createNativeQuery(
+        Query queryItems = em.createNativeQuery(
                 "Select p.id, p.country_id, p.passport_id from person p, passport t where p.passport_id = t.id " +
                         "and p.country_id != t.country_id");
 
 //        "Select p.id as pid, p.country_id pcid, t.id as pid, t.country_id as tcid from person p, passport t where p.passport_id = t.id " +
 //                "and p.country_id != t.country_id");
 
-        List result = queryPersons.getResultList();
+        List result = queryItems.getResultList();
         ArrayList<Person> personList = new ArrayList<>();
         while(result.iterator().hasNext()){
             Object[] obj = (Object[]) result.iterator().next();
@@ -126,6 +124,36 @@ public class PersonService {
             personRepository.updatePersonById(person.getId(),person);
 
             personList.add(person);
+        }
+        return personList;
+
+    }
+
+    public List<String> searchAllItems(String searchTerm) {
+
+        String[] terms = searchTerm.split("\\+");
+
+        ArrayList<String> personList = new ArrayList<>();
+        for (String term : terms) {
+            Query queryItems = em.createNativeQuery(
+                    "Select distinct p.first_name, p.last_name, p.position from person p where " +
+                            " p.first_name like '%" + term + "%' or " +
+                            " p.last_name like '%" + term + "%' or " +
+                            " p.position like '%" + term + "%' "
+            );
+            List result = queryItems.getResultList();
+            Iterator<Object> itr = result.iterator();
+            while(itr.hasNext()) {
+                Object[] obj = (Object[]) itr.next();
+                // now you have one array of Object for each row
+                String first = obj[0].toString();
+                String last = String.valueOf(obj[1]);
+                String position = (obj[2] == null) ? "janitor" : String.valueOf(obj[2]);
+
+                System.out.println(first + " " + last + " " + position);
+
+                personList.add(first + " " + last + " " + position);
+            }
         }
         return personList;
 
