@@ -48,7 +48,7 @@ public class PersonService {
         return personRepository.selectAllPeople();
     }
 
-    public Person getPersonById(Long id) {
+    public Optional<Person> getPersonById(Long id) {
         return personRepository.getPersonById(id);
     }
 
@@ -98,6 +98,7 @@ public class PersonService {
     }
 
     public List<Person> massUpdate() {
+        Person person = new Person();
         Query queryItems = em.createNativeQuery(
                 "Select p.id, p.country_id, p.passport_id from person p, passport t where p.passport_id = t.id " +
                         "and p.country_id != t.country_id");
@@ -114,7 +115,10 @@ public class PersonService {
             Long passport_id = Long.parseLong(String.valueOf(obj[2]));
             // Long c_id = Long.parseLong(String.valueOf(obj[1]));
 
-            Person person = personRepository.getPersonById(id);
+            Optional<Person> personOpt = personRepository.getPersonById(id);
+            if(personOpt.isPresent()) {
+                person = personOpt.get();
+            }
             Passport passport = passportRepository.getPassportById(passport_id);
 
             System.out.println(person);

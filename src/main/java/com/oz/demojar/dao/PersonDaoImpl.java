@@ -19,6 +19,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -116,11 +118,11 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public int deletePersonById(Long id) {
-        Person person = getPersonById(id);
-        if (person == null) {
+        Optional<Person> person = getPersonById(id);
+        if (person.isPresent()) {
+            personRepository.delete(person.get());
             return 0;
         } else {
-            personRepository.delete(person);
             return 1;
         }
     }
@@ -189,9 +191,9 @@ class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public Person getPersonById(Long id) {
+    public Optional<Person> getPersonById(Long id) {
         Optional<Person> personOpt = personRepository.findById(id);
-        return personOpt.orElse(null);
+        return personOpt;
     }
 
     @Override
@@ -221,6 +223,15 @@ class PersonDaoImpl implements PersonDao {
 
     public long findLastId() {
         return personRepository.findLastId();
+    }
+
+    public static Person deserialize(String fileName) throws Exception {
+        FileInputStream file = new FileInputStream(fileName);
+        ObjectInputStream in = new ObjectInputStream(file);
+        Person book = (Person) in.readObject();
+        in.close();
+        file.close();
+        return book;
     }
 
 }

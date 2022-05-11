@@ -2,7 +2,6 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.model.Country;
 import com.oz.demojar.service.CountryService;
-import net.minidev.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,16 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
 
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/country")
 @RestController
 public class CountryController {
 
-    private final CountryService countryService;
+    @Autowired
+    private transient CountryService countryService;
 
     @Autowired
-    public CountryController(CountryService countryService) {
-        this.countryService = countryService;
-    }
+    public CountryController() {}
 
     @GetMapping
     public List<Country> getAllCountries() {
@@ -33,11 +32,12 @@ public class CountryController {
 
     @GetMapping(path = "{id}")
     public Country selectCountryById(@PathVariable("id") Long id) throws Exception {
-        Country country = countryService.getCountryById(id);
-        if (country == null || country.getId() == null) {
-            throw new Exception("no country found for id: " + id);
-        }
-        return country;
+       Optional<Country> countryOpt =countryService.getCountryById(id);
+       if(countryOpt.isPresent()) {
+           return countryOpt.get();
+       } else {
+           return null;
+       }
     }
 
     @GetMapping(path = "/test")

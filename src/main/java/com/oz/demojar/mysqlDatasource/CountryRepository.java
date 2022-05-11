@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Collection;
+import java.util.Optional;
 
 // This will be AUTO IMPLEMENTED by Spring into a Bean called MysqlDataSource
 // CRUD refers Create, Read, Update, Delete
@@ -14,7 +15,7 @@ import java.util.Collection;
 @EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
 public interface CountryRepository extends JpaRepository<Country, Long> {
 
-    Country findByName(String name);
+    Optional<Country> findByName(String name);
 
     @Query(value = "SELECT * FROM country c WHERE id = ?1", nativeQuery = true)
     Country getRandomCountry(int id);

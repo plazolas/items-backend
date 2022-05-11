@@ -3,6 +3,7 @@ package com.oz.demojar.api;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
+import com.oz.demojar.mysqlDatasource.CountryRepository;
 import com.oz.demojar.security.ObjectEncryption;
 import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.PersonService;
@@ -41,23 +42,20 @@ import java.util.stream.Collectors;
 public class PersonController {
 
     private final String cors = "http://www.ozdev.net";
-    private final PersonService personService;
-    private final CountryService countryService;
-    private final UserService userService;
     private final HttpServletRequest request;
     //private final Validator validator;
 
     @Autowired
     private StartupProperties startupProperties;
+    @Autowired
+    private transient CountryService countryService;
+    @Autowired
+    private transient UserService userService;
+    @Autowired
+    private transient PersonService personService;
 
     @Autowired
-    public PersonController(PersonService personService,
-                            CountryService countryService,
-                            UserService userService,
-                            HttpServletRequest httpRequest) {
-        this.personService = personService;
-        this.countryService = countryService;
-        this.userService = userService;
+    public PersonController(HttpServletRequest httpRequest) {
         this.request = httpRequest;
 
         //ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -88,7 +86,7 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<Person> getAllPeople() {
+    public List<Person> getAllItems() {
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
         List<Person> persons = personService.getAllPeople();
@@ -108,12 +106,17 @@ public class PersonController {
     }
 
     @GetMapping(path = "{id}")
-    public Person selectPersonById(@PathVariable("id") Long id) {
-        return personService.getPersonById(id);
+    public Person getItemById(@PathVariable("id") Long id) {
+        Optional<Person> personOpt = personService.getPersonById(id);
+        if(personOpt.isPresent()) {
+            return personOpt.get();
+        } else {
+            return null;
+        }
     }
 
     @DeleteMapping(path = "{id}")
-    public int deletePersonById(@PathVariable("id") Long id) {
+    public int deleteItemById(@PathVariable("id") Long id) {
         return personService.deletePersonById(id);
     }
 
@@ -123,20 +126,20 @@ public class PersonController {
     }
 
     @PutMapping(path = "/p/{id}")
-    public Person updatePersonById(@PathVariable("id") Long id, @RequestBody Person person) {
+    public Person updateItemById(@PathVariable("id") Long id, @RequestBody Person person) {
         return personService.updatePersonById(id, person);
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
     @CrossOrigin(origins = cors)
     public int addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
-        Person p = personService.getPersonById(pid);
-        Country c = countryService.getCountryById(cid);
-        if (p == null || c == null) {
-            personService.addPersonToCountry(p, c);
-            return 1;
-        } else {
+        Optional<Person> p = personService.getPersonById(pid);
+        Optional<Country> c = countryService.getCountryById(cid);
+        if (p.isPresent() && c.isPresent()) {
+            personService.addPersonToCountry(p.get(), c.get());
             return 0;
+        } else {
+            return 1;
         }
     }
 

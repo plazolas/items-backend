@@ -19,12 +19,11 @@ import java.util.Optional;
 @RestController
 public class PassportController {
 
-    private final PassportService passportService;
+    @Autowired
+    private transient PassportService passportService;
 
     @Autowired
-    public PassportController(PassportService passportService) {
-        this.passportService = passportService;
-    }
+    public PassportController() {}
 
     @PostMapping  // (value="", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Passport createPassport(@RequestBody Person person) {

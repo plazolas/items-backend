@@ -24,7 +24,7 @@ class CountryDaoImpl implements CountryDao {
 
     public List<Country> selectAllCountriesSorted() {
         List<Country> countries = countryRepository.findAll();
-        //Collections.sort(countries, Comparator.comparing(c -> c.getName().toLowerCase()));
+        Collections.sort(countries, Comparator.comparing(c -> c.getName().toLowerCase()));
         return countries;
     }
 
@@ -44,7 +44,7 @@ class CountryDaoImpl implements CountryDao {
         return countryRepository.findById(id);
     }
 
-    public Country findCountryByName(String name) {
+    public Optional<Country> findCountryByName(String name) {
         return countryRepository.findByName(name);
     }
 
