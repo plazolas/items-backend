@@ -2,6 +2,7 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.model.Country;
 import com.oz.demojar.service.CountryService;
+import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,12 +32,12 @@ public class CountryController {
     }
 
     @GetMapping(path = "{id}")
-    public Country selectCountryById(@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<Country> selectCountryById(@PathVariable("id") Long id) throws Exception {
        Optional<Country> countryOpt =countryService.getCountryById(id);
        if(countryOpt.isPresent()) {
-           return countryOpt.get();
+           return ResponseEntity.ok().body(countryOpt.get());
        } else {
-           return null;
+           throw new ObjectNotFoundException("Unable to locate country with id: " + id.toString());
        }
     }
 
@@ -104,7 +105,7 @@ public class CountryController {
     // consider subclassing ExceptionHandlerExceptionResolver (see below).
     @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
                         DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
-    public ResponseEntity<Object> handleError(HttpServletRequest req, Exception ex) {
+    public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {
 
         System.out.println( "Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
 

@@ -3,36 +3,32 @@ package com.oz.demojar.api;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
-import com.oz.demojar.mysqlDatasource.CountryRepository;
-import com.oz.demojar.security.ObjectEncryption;
 import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.validation.FieldError;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
-import java.security.Key;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,7 +82,7 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<Person> getAllItems() {
+    public List<Person> getAllPersons() {
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
         List<Person> persons = personService.getAllPeople();
@@ -106,17 +102,17 @@ public class PersonController {
     }
 
     @GetMapping(path = "{id}")
-    public Person getItemById(@PathVariable("id") Long id) {
+    public Person getPersonById(@PathVariable("id") Long id) {
         Optional<Person> personOpt = personService.getPersonById(id);
         if(personOpt.isPresent()) {
             return personOpt.get();
         } else {
-            return null;
+            throw new NoSuchElementException("item " + id + " does not exits.");
         }
     }
 
     @DeleteMapping(path = "{id}")
-    public int deleteItemById(@PathVariable("id") Long id) {
+    public int deletePersonById(@PathVariable("id") Long id) {
         return personService.deletePersonById(id);
     }
 
@@ -266,4 +262,39 @@ public class PersonController {
             this.message = message;
         }
     }
+
+    @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
+            DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
+    public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {
+
+        System.out.println( "Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
+
+        Class<?> c = ex.getClass();
+        String fullClassName = c.getName();
+        String[] parts = fullClassName.split("\\.");
+        String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
+
+        HttpStatus httpStatus;
+        switch (exName) {
+            case "InvalidDataAccessApiUsageException":
+            case "MethodArgumentTypeMismatchException":
+                httpStatus = HttpStatus.BAD_REQUEST;
+                break;
+            case "DataIntegrityViolationException":
+                httpStatus = HttpStatus.CONFLICT;
+                break;
+            case "SQLException":
+            case "DataAccessException":
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                break;
+            case "NoSuchElementException":
+                httpStatus = HttpStatus.NO_CONTENT;
+                break;
+            default:
+                httpStatus = HttpStatus.NOT_FOUND;
+
+        }
+        return new ResponseEntity(ex.getMessage(), httpStatus);
+    }
+
 }

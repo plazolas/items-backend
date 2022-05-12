@@ -41,19 +41,19 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person addPerson(String firstName, String lastName, Country country, String position, Integer age, Integer boss) {
-
-//        if(country.getId() != null) {
-//            c = countryRepository.getById(country.getId());
-//        } else if (country.getName() != null) {
-//            c = countryRepository.findByName(country.getName());
-//        } else {
-//            c = countryRepository.getById(19L);
-//        }
+        Country c = null;
+        if(country.getId() != null) {
+            c = countryRepository.getById(country.getId());
+        } else if (country.getName() != null) {
+            c = countryRepository.findByName(country.getName()).get();
+        } else {
+            return null;
+        }
 
         try {
             Person person = new Person(firstName, lastName, country, position, age, boss);
             Person newPerson = personRepository.save(person);
-            System.out.println("PersonDaoImpl: "+newPerson);
+            System.out.println("PersonDaoImpl: added " + newPerson);
             return newPerson;
         } catch (ConstraintViolationException e) {
             Set<ConstraintViolation<?>> errors;
