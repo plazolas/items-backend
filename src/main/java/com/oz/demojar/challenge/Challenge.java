@@ -24,19 +24,21 @@ public class Challenge {
 
     public static boolean isAnagram(String a,String b)
     {
+        if(a.length() < 1 || a.length() > 10000 ||
+           b.length() < 1 || b.length() > 10000) return false;
+
+        if(a.length() != b.length()) return false;
+
         System.out.println(a);
         System.out.println(b);
         List<String> alphabet = CommonUtils.getAlphabet("lower");
 
+        char[] charsA = a.toCharArray();
+        char[] charsB = b.toCharArray();
+
         Map<String, Object> alphabetMap1 = new HashMap<>();
-        Map<String, Object> alphabetMap2 = new HashMap<>();
         alphabet.forEach(ch -> alphabetMap1.put(ch,0));
-        alphabet.forEach(ch -> alphabetMap2.put(ch,0));
-
-        char[] chAs = a.toCharArray();
-        char[] chBs = b.toCharArray();
-
-        for(char ch : chAs) {
+        for(char ch : charsA) {
             String k = String.valueOf(ch);
             if(alphabetMap1.containsKey(k)) {
                 Integer tmp = (Integer) alphabetMap1.get(k);
@@ -45,31 +47,17 @@ public class Challenge {
                 alphabetMap1.put(k, o);
             }
         }
-
-        for(char ch : chBs) {
-            String k = String.valueOf(ch);
-            if(alphabetMap2.containsKey(k)) {
-                Integer tmp = (Integer) alphabetMap2.get(k);
-                tmp++;
-                Object o = tmp;
-                alphabetMap2.put(k, o);
-            }
-        }
-
         System.out.println(CommonUtils.objMapToJson(alphabetMap1));
-        System.out.println(CommonUtils.objMapToJson(alphabetMap2));
 
-        boolean anagram = false;
-        for(char ch : chAs) {
-            String k = String.valueOf(ch);
-            if(alphabetMap1.get(k) == alphabetMap2.get(k)) {
-                anagram = true;
-            } else {
-                anagram = false;
-                break;
+        Arrays.sort(charsA);
+        Arrays.sort(charsB);
+
+        for(int i=0;i<a.length();i++) {
+            if(charsA[i] != charsB[i]) {
+                return false;
             }
         }
-        return anagram;
+        return true;
     }
 
     public static void countWords (String str) {
@@ -98,11 +86,11 @@ public class Challenge {
 
             for (int i = 0; i < str.length(); i++) {
                 int count = 0;
-                for (int j = 0; j < str.length() - 1; j++) {
-                    if (chars[i] == chars[j]) {
-                        intMap.put(String.valueOf(chars[i]), ++count);
+                    for (int j = 0; j < str.length() - 1; j++) {
+                        if (chars[i] == chars[j]) {
+                            intMap.put(String.valueOf(chars[i]), ++count);
+                        }
                     }
-                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
