@@ -33,7 +33,7 @@ public class CountryController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<Country> selectCountryById(@PathVariable("id") Long id) throws Exception {
-       Optional<Country> countryOpt =countryService.getCountryById(id);
+       Optional<Country> countryOpt = countryService.getCountryById(id);
        if(countryOpt.isPresent()) {
            return ResponseEntity.ok().body(countryOpt.get());
        } else {
@@ -43,66 +43,9 @@ public class CountryController {
 
     @GetMapping(path = "/test")
     public String testCountries() {
-        String str = "the number of Number Random that fits is a fits at random random order";
-        String str1 = str.toLowerCase(Locale.ROOT);
-        String[] words = str1.split(" ");
-
-        HashMap<String,Integer> map = new HashMap<>();
-        ArrayList<String> inWords = new ArrayList<>();
-        for(int i = words.length - 1; i >= 0; i--) {
-            if(map.containsKey(words[i])) {
-                int count = map.get(words[i]);
-                map.put(words[i], count + 1);
-            } else {
-                map.put(words[i], 1);
-                inWords.add(words[i]);
-            }
-        }
-
-        str = "sssssakkkettreeere";
-        String r = "";
-        int count = 0;
-        try {
-            char[] chars = str.toCharArray();
-            HashMap<Character, Integer> resultMap = null;
-            for (int i = 0; i < str.length(); i++) {
-                count = 0;
-                for (int j = 1; j < str.length(); j++) {
-                    if (chars[i] == chars[j]) {
-                        System.out.println();
-                        resultMap.put(chars[i], ++count);
-                    }
-                }
-                r = resultMap.toString();
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-
-        return r;
+        return "country test done!";
     }
 
-//    // Convert a predefined exception to an HTTP Status code
-//    @ResponseStatus(value=HttpStatus.CONFLICT, reason="Data integrity violation")  // 409
-//    @ExceptionHandler(DataIntegrityViolationException.class)
-//    public void conflict() {
-//        // Nothing to do
-//    }
-
-//    // Specify name of a specific view that will be used to display the error:
-//    @ExceptionHandler({SQLException.class, DataAccessException.class})
-//    public String databaseError() {
-//        // Nothing to do.  Returns the logical view name of an error page, passed
-//        // to the view-resolver(s) in usual way.
-//        // Note that the exception is NOT available to this view (it is not added
-//        // to the model) but see "Extending ExceptionHandlerExceptionResolver"
-//        // below.
-//        return "SQLException databaseError";
-//    }
-
-    // Total control - set up a model and return the view name yourself. Or
-    // consider subclassing ExceptionHandlerExceptionResolver (see below).
     @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
                         DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
     public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {

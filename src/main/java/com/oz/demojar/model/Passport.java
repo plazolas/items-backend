@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @JsonSerialize
-public class Passport implements Serializable {
+public class Passport {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

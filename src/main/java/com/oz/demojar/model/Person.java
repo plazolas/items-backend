@@ -4,20 +4,18 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
-
-import java.io.Serializable;
 import java.util.Objects;
+
+import com.oz.demojar.dto.PersonDTO;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @JsonSerialize
 @Table(name="person")
-public class Person implements Serializable {
+public class Person {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -35,15 +33,15 @@ public class Person implements Serializable {
     private String lastName;
 
     @JsonProperty("position")
-    @Column(nullable = true)
+    @Column
     private String position;
 
     @JsonProperty("age")
-    @Column(nullable = true)
+    @Column
     private Integer age;
 
     @JsonProperty("boss")
-    @Column(nullable = true)
+    @Column
     private Integer boss;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -98,6 +96,16 @@ public class Person implements Serializable {
         this.position = position;
         this.age = age;
         this.boss = boss;
+    }
+
+    public Person(PersonDTO person) {
+        this.firstName = person.getFirstname();
+        this.lastName = person.getLastname();
+        this.country = person.getCountry();
+        this.passport = person.getPassport();
+        this.position = person.getPosition();
+        this.age = person.getAge();
+        this.boss = person.getBoss();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.oz.demojar.dao;
 
+import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -16,9 +17,9 @@ public interface PersonDao {
 
     int deletePersonById(Long id);
 
-    Person updatePersonById(Long id, Person person);
+    Person updatePerson(Person person);
 
-    boolean updatePersonByIdShort(Long id, Person person);
+    Person updatePersonById(Long id, Person person);
 
     Optional<Person> getPersonById(Long id);
 

@@ -1,5 +1,6 @@
 package com.oz.demojar.dao;
 
+import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -7,7 +8,6 @@ import com.oz.demojar.mysqlDatasource.CountryRepository;
 import com.oz.demojar.mysqlDatasource.PassportRepository;
 import com.oz.demojar.mysqlDatasource.PersonRepository;
 
-import org.hibernate.annotations.OrderBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
@@ -22,8 +22,6 @@ import javax.validation.ConstraintViolationException;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Primary
 @Repository("person")
@@ -127,73 +125,73 @@ class PersonDaoImpl implements PersonDao {
         }
     }
 
-    public boolean updatePersonByIdShort(Long id, Person person) {
-        Object p = personRepository.updateShortById(person.getLastName(), person.getFirstName(), id);
-        System.out.println(p.toString());
-        return (p.getClass() == Person.class);
+    @Override
+    public Person updatePerson(Person person) {
+        Long cid = (person.getCountry() == null) ? null : person.getCountry().getId();
+        System.out.println(cid);
+        System.out.println("my new person: "+person);
+        int success = personRepository.updatePerson(
+                person.getId(),
+                person.getFirstName(),
+                person.getLastName(),
+                cid,
+                person.getAge(),
+                person.getPosition(),
+                person.getBoss()
+        );
+        System.out.println("update succeded: "+ success);
+        return person;
     }
 
     @Override
     public Person updatePersonById(Long id, Person person) {
-        Passport pass = null;
-        Passport newPass;
-        Country country = person.getCountry();
-        System.out.println(person);
-        Person oldPerson = personRepository.getById(id);
+        System.out.println("NNNNew: "+person);
+        Person oldPerson = new Person();
+        try {
+            oldPerson = personRepository.getById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.getStackTrace();
+        }
+        System.out.println("OOOOld: "+oldPerson);
 
-        if(person.getPassport() != null) {
-            pass = passportRepository.getById(person.getPassport().getId());
-            pass.setCountry(country);
-            person.setPassport(pass);
+        if(!oldPerson.isValid()) {
+            return null;
         } else {
-            person.setPassport(null);
-        }
-        person.setId(0L);
-        System.out.println(oldPerson);
-        if(!oldPerson.isValid()) { return null; }
-        else {
-            if((oldPerson.getCountry() != null && person.getCountry() != null ) &&
-               (person.getCountry().getId() != null && oldPerson.getCountry().getId() != null) &&
-               !(person.getCountry().getId().equals(oldPerson.getCountry().getId()))
-            ) {
-                person.setCountry(countryRepository.getById(person.getCountry().getId()));
-                country = person.getCountry();
-            }
-
-            if((oldPerson.getPassport() != null && person.getPassport() != null ) &&
-                    (person.getPassport().getId() != null && oldPerson.getPassport().getId() != null) &&
-                    !(person.getPassport().getId().equals(oldPerson.getPassport().getId()))
-            ) {
-                pass = passportRepository.getById(person.getPassport().getId());
-                if (!pass.getCountry().getId().equals(person.getCountry().getId())) {
-                    pass.setCountry(person.getCountry());
-                    Passport pas = passportRepository.save(pass);
-                    System.out.println(pas);
-                }
-                person.setPassport(passportRepository.getById(person.getPassport().getId()));
-            }
-
-            if(person.getLastName()  == null) person.setLastName(oldPerson.getLastName());
-            if(person.getFirstName() == null) person.setFirstName(oldPerson.getFirstName());
             if(person.getCountry()   == null) person.setCountry(oldPerson.getCountry());
-            if(person.getPassport()  == null) person.setPassport(oldPerson.getPassport());
+            if(person.getPassport()  == null && oldPerson.getPassport() != null) person.setPassport(oldPerson.getPassport());
+            if(person.getAge()  == null && oldPerson.getAge() != null) person.setAge(oldPerson.getAge());
+            if(person.getPosition()  == null && oldPerson.getPosition() != null) person.setPosition(oldPerson.getPosition());
+            if(person.getBoss()  == null && oldPerson.getBoss() != null) person.setPosition(oldPerson.getPosition());
 
-            personRepository.delete(oldPerson);
+            ///personRepository.delete(oldPerson);
         }
 
-        Person p = personRepository.save(person);
-        if (pass != null) {
-            newPass = setPersonToPassport(pass, p);
-            System.out.println(newPass);
+        int p = 0;
+        try {
+            p = personRepository.updatePerson(
+                    person.getId(),
+                    person.getFirstName(),
+                    person.getLastName(),
+                    person.getCountry().getId(),
+                    person.getAge(),
+                    person.getPosition(),
+                    person.getBoss()
+            );
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.getStackTrace();
         }
 
-        return p;
+        System.out.println(p);
+
+        return person;
     }
 
     @Override
     public Optional<Person> getPersonById(Long id) {
-        Optional<Person> personOpt = personRepository.findById(id);
-        return personOpt;
+        return personRepository.findById(id);
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.*;
 @Getter
 @Setter
 @JsonSerialize
-public class Country implements Serializable {
+public class Country {
 
     //private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     //private Validator validator = factory.getValidator();

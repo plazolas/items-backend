@@ -2,6 +2,7 @@ package com.oz.demojar.service;
 
 import com.oz.demojar.dao.PassportDao;
 import com.oz.demojar.dao.PersonDao;
+import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
 public class PersonService {
 
     @Qualifier("person")
-    private final PersonDao personRepository;
+    private final PersonDao personDao;
 
     @Qualifier("passport")
     private final PassportDao passportRepository;
@@ -35,47 +36,47 @@ public class PersonService {
 
     @Autowired
     public PersonService(EntityManager entityManager, PersonDao personDao, PassportDao passportDao) {
-        this.personRepository = personDao;
+        this.personDao = personDao;
         this.passportRepository = passportDao;
         this.em = entityManager;
     }
 
     public Person addPerson(String firstName, String lastName, Country country, String position, int age, int boss) {
-        return personRepository.addPerson(firstName, lastName, country, position, age, boss);
+        return personDao.addPerson(firstName, lastName, country, position, age, boss);
     }
 
     public List<Person> getAllPeople() {
-        return personRepository.selectAllPeople();
+        return personDao.selectAllPeople();
     }
 
     public Optional<Person> getPersonById(Long id) {
-        return personRepository.getPersonById(id);
+        return personDao.getPersonById(id);
     }
 
-    public long findLastId() { return personRepository.findLastId(); }
+    public Person updatePerson(Person person) {
+        return personDao.updatePerson(person);
+    }
+
+    public Person updatePersonById(Long id, Person person) {
+        return personDao.updatePersonById(id, person);
+    }
+
+    public long findLastId() { return personDao.findLastId(); }
 
     public int deletePersonById(Long id) {
-        return personRepository.deletePersonById(id);
-    }
-
-    public Person updatePersonById(Long id, Person p) {
-        return personRepository.updatePersonById(id, p);
-    }
-
-    public boolean updatePersonByIdShort(Long id, Person p) {
-        return personRepository.updatePersonByIdShort(id, p);
+        return personDao.deletePersonById(id);
     }
 
     public void addPersonToCountry(Person p, Country c) {
-        personRepository.addPersonToCountry(p,c);
+        personDao.addPersonToCountry(p,c);
     }
 
     public Collection<Person> findAllAnns() {
-        return personRepository.findAllAnns();
+        return personDao.findAllAnns();
     }
 
     public Collection<Person> findPersonsWithPassportsByCountry(Long id) {
-        return personRepository.findPersonsWithPassportsByCountry(id);
+        return personDao.findPersonsWithPassportsByCountry(id);
     }
 
     public List<Person> findPaginated(int pageNumber, int pageSize) {
@@ -115,7 +116,7 @@ public class PersonService {
             Long passport_id = Long.parseLong(String.valueOf(obj[2]));
             // Long c_id = Long.parseLong(String.valueOf(obj[1]));
 
-            Optional<Person> personOpt = personRepository.getPersonById(id);
+            Optional<Person> personOpt = personDao.getPersonById(id);
             if(personOpt.isPresent()) {
                 person = personOpt.get();
             }
@@ -125,7 +126,7 @@ public class PersonService {
             System.out.println(passport);
 
             person.setCountry(passport.getCountry());
-            personRepository.updatePersonById(person.getId(),person);
+            personDao.updatePersonById(person.getId(), person);
 
             personList.add(person);
         }
@@ -140,7 +141,7 @@ public class PersonService {
         ArrayList<String> personList = new ArrayList<>();
         for (String term : terms) {
             Query queryItems = em.createNativeQuery(
-                    "Select distinct p.first_name, p.last_name, p.position from person p where " +
+                    "Select p.id, p.first_name, p.last_name, p.position from person p where " +
                             " p.first_name like '%" + term + "%' or " +
                             " p.last_name like '%" + term + "%' or " +
                             " p.position like '%" + term + "%' "

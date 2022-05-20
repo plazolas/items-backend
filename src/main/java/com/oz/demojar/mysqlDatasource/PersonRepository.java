@@ -31,6 +31,28 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             nativeQuery = true)
     Object updateShortById(String lastname, String firstname, Long id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE person p SET " +
+            "first_name = ?3,  " +
+            "last_name = ?2,  " +
+            "country_id = ?4,  " +
+            "age = ?5,  " +
+            "position = ?6,  " +
+            "boss = ?7  " +
+            "WHERE p.id  = ?1",
+            countQuery = "SELECT * FROM person WHERE id = ?3",
+            nativeQuery = true)
+    int updatePerson(
+            Long id,
+            String firstName,
+            String lastName,
+            long country_id,
+            int age,
+            String position,
+            int boss
+    );
+
     @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
     long findLastId();
 

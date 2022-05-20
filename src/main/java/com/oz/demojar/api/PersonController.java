@@ -1,5 +1,6 @@
 package com.oz.demojar.api;
 
+import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
@@ -17,20 +18,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.validation.FieldError;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.crypto.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.oz.demojar.utils.CommonUtils;
+import com.oz.demojar.challenge.Challenge;
+
+import static java.util.stream.Collectors.toMap;
 
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/person")
@@ -90,7 +89,7 @@ public class PersonController {
     }
 
     @GetMapping(path = "/search/{term}")
-    public List<String> getItemsBySearchTerm(@PathVariable("term") String term ) {
+    public List<String> getItemsBySearchTerm(@PathVariable("term") String term) {
         return personService.searchAllItems(term);
     }
 
@@ -103,12 +102,8 @@ public class PersonController {
 
     @GetMapping(path = "{id}")
     public Person getPersonById(@PathVariable("id") Long id) {
-        Optional<Person> personOpt = personService.getPersonById(id);
-        if(personOpt.isPresent()) {
-            return personOpt.get();
-        } else {
-            throw new NoSuchElementException("item " + id + " does not exits.");
-        }
+        return personService.getPersonById(id)
+                .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
     }
 
     @DeleteMapping(path = "{id}")
@@ -116,14 +111,25 @@ public class PersonController {
         return personService.deletePersonById(id);
     }
 
-    @PutMapping(path = "{id}")
-    public boolean updatePersonByIdShort(@PathVariable("id") Long id, @RequestBody Person person) {
-        return personService.updatePersonByIdShort(id, person);
-    }
-
     @PutMapping(path = "/p/{id}")
-    public Person updateItemById(@PathVariable("id") Long id, @RequestBody Person person) {
-        return personService.updatePersonById(id, person);
+    public ResponseEntity<Person> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
+        System.out.println("details: " + personDetails);
+        Person person = personService.getPersonById(id)
+                .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
+        System.out.println("old: " + person);
+
+        person.setPassport(personDetails.getPassport());
+        person.setCountry(personDetails.getCountry());
+        person.setFirstName(personDetails.getFirstname());
+        person.setLastName(personDetails.getLastname());
+        person.setAge(personDetails.getAge());
+        person.setPosition(personDetails.getPosition());
+
+        Person updatedPerson = personService.updatePersonById(personDetails.getId(), person);
+
+        if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
+
+        return ResponseEntity.ok(updatedPerson);
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
@@ -163,47 +169,49 @@ public class PersonController {
 
     @GetMapping("/findlast")
     public long findLastId() {
-        Long id = personService.findLastId();
-        System.out.println();
-        return id;
+        return personService.findLastId();
     }
 
-    @GetMapping(value="/ping")
-    public String ping() throws NoSuchPaddingException, NoSuchAlgorithmException {
-//        User user = userService.getUserById(175L);
-//
-//        SealedObject sealedObject = null;
-//        String algorithm = "AES";
-//
-//        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-//        keyGenerator.init(128);
-//        SecretKey key = keyGenerator.generateKey();
-//
-//        // Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");     // only CBC mode supports iv
-//
-//        byte[] iv = new byte[128/8];
-//        Random random = new Random();
-//        random.nextBytes(iv);
-//        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-//        try {
-//            sealedObject = ObjectEncryption.encryptObject(algorithm, user, key, ivSpec);
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
+    @GetMapping(value = "/ping")
+    public String ping() {
+
+        // triplets test
+        boolean r = false;
+        int[] intArray = new int[]{0, 1, 2, 3, 1};
+
+        r = Challenge.findTriplets(intArray);
+        System.out.println(Arrays.toString(intArray) + " is triplet? " + r);
+
+        String arrStr = "0, -1, 2, -3, 1, a";
+        Optional<int[]> intsOpt = CommonUtils.stringToInts(arrStr);
+        intArray = intsOpt.orElseGet(() -> new int[0]);
+        System.out.println(Arrays.toString(intArray) + " is triplet? " + r);
+
+        //  anagram test
+
+        String s1 = "geeksforgeeks";
+        String s2 = "geeksgeeksfor";
+        boolean anagram = Challenge.isAnagram(s1, s2);
+        System.out.println("s1 & s2 anagram? "+anagram);
+
+        System.out.println(" ==== countWords =====");
+        Challenge.countWords("the number of Number Random that fits is a fits at random random order");
+        System.out.println(" ==== countChars =====");
+        Challenge.countChars("sssssakkkettreeere");
 
         return "pong";
     }
 
-    @GetMapping(value="/ping/{pathVar}")
+    @GetMapping(value = "/ping/{pathVar}")
     public PongMessage ping(@PathVariable Long pathVar,
-                            @RequestParam(value="param", defaultValue="defaultParam") String param) {
+                            @RequestParam(value = "param", defaultValue = "defaultParam") String param) {
         return new PongMessage(String.format("pong: %d, %s", pathVar, param));
     }
 
-    @PostMapping(value="/account")
+    @PostMapping(value = "/account")
     public SignupResponse postAccount(HttpServletResponse response,
-                                      @RequestParam(value="username") String username,
-                                      @RequestParam(value="password") String password) {
+                                      @RequestParam(value = "username") String username,
+                                      @RequestParam(value = "password") String password) {
         try {
             User newUser = User.builder()
                     .username(username)
@@ -213,8 +221,8 @@ public class PersonController {
                     .build();
             newUser.setPassword(newUser.getEncryptPassword(password));
             userService.saveUser(newUser);
-            return new SignupResponse("Created user "+ username, true);
-        } catch(Exception e) {
+            return new SignupResponse("Created user " + username, true);
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new SignupResponse("An error occurred while creating your account.", false);
         }
@@ -263,16 +271,17 @@ public class PersonController {
         }
     }
 
-    @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
+    @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
             DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
     public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {
 
-        System.out.println( "Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
 
         Class<?> c = ex.getClass();
         String fullClassName = c.getName();
         String[] parts = fullClassName.split("\\.");
         String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
+
+        System.out.println("Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
 
         HttpStatus httpStatus;
         switch (exName) {
@@ -281,10 +290,12 @@ public class PersonController {
                 httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case "DataIntegrityViolationException":
+            case "NumberFormatException":
                 httpStatus = HttpStatus.CONFLICT;
                 break;
             case "SQLException":
             case "DataAccessException":
+            case "JpaSystemException":
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 break;
             case "NoSuchElementException":
@@ -296,5 +307,6 @@ public class PersonController {
         }
         return new ResponseEntity(ex.getMessage(), httpStatus);
     }
+
 
 }

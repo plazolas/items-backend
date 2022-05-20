@@ -22,7 +22,7 @@ import java.util.Base64;
 @Table(name = "user")
 @Builder
 @JsonSerialize
-public class User implements Serializable  {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
