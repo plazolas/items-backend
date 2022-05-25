@@ -13,6 +13,8 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonSerialize
 @Table(name="person")
 public class Person {
@@ -52,8 +54,6 @@ public class Person {
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
-
-    public Person() {}
 
     public Person(String firstName, String lastName, Country country, String position, int age, int boss) {
         this.firstName = firstName;
