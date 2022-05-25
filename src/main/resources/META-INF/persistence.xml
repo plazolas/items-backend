@@ -5,5 +5,6 @@
 		<class>com.oz.demojar.model.Person</class>
 		<class>com.oz.demojar.model.Country</class>
 		<class>com.oz.demojar.model.Passport</class>
+		<class>com.oz.demojar.model.User</class>
 	</persistence-unit>
 </persistence>
