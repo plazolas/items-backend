@@ -8,6 +8,7 @@ import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
+import com.oz.demojar.utils.BinaryTree;
 import com.oz.demojar.utils.GetIpAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -174,31 +175,6 @@ public class PersonController {
 
     @GetMapping(value = "/ping")
     public String ping() {
-
-        // triplets test
-        boolean r = false;
-        int[] intArray = new int[]{0, 1, 2, 3, 1};
-
-        r = Challenge.findTriplets(intArray);
-        System.out.println(Arrays.toString(intArray) + " is triplet? " + r);
-
-        String arrStr = "0, -1, 2, -3, 1, a";
-        Optional<int[]> intsOpt = CommonUtils.stringToInts(arrStr);
-        intArray = intsOpt.orElseGet(() -> new int[0]);
-        System.out.println(Arrays.toString(intArray) + " is triplet? " + r);
-
-        //  anagram test
-
-        String s1 = "geeksforgeeks";
-        String s2 = "geeksgeeksfor";
-        boolean anagram = Challenge.isAnagram(s1, s2);
-        System.out.println("s1 & s2 anagram? "+anagram);
-
-        System.out.println(" ==== countWords =====");
-        Challenge.countWords("the number of Number Random that fits is a fits at random random order");
-        System.out.println(" ==== countChars =====");
-        Challenge.countChars("sssssakkkettreeere");
-
         return "pong";
     }
 
@@ -296,6 +272,7 @@ public class PersonController {
             case "SQLException":
             case "DataAccessException":
             case "JpaSystemException":
+            case "ArrayIndexOutOfBoundsException":
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 break;
             case "NoSuchElementException":

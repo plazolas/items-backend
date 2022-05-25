@@ -27,7 +27,6 @@ public class CommonUtils {
         if (strNum == null) {
             return false;
         }
-        System.out.println("isInteger|"+strNum+"|");
         Pattern pattern = Pattern.compile("-?\\d+");
         return pattern.matcher(strNum).matches();
     }
@@ -57,7 +56,6 @@ public class CommonUtils {
 //        for (String s : strArr) {
 //            s = s.trim();
 //            if (!CommonUtils.isInteger(s)) {
-//                System.out.println("non integer chars found in array of strings");
 //                return Optional.of(new int[0]);
 //            }
 //            arrInt[i++] = Integer.parseInt(s);

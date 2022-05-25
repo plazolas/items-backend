@@ -1,11 +1,15 @@
 package com.oz.demojar.challenge;
 
 import com.oz.demojar.utils.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Challenge {
+
+    private static final Logger log = LoggerFactory.getLogger(Challenge.class);
 
     public static boolean findTriplets(int[] arr) {
         if (arr.length < 1 || arr.length > Math.pow(10, 4)) return false;
@@ -28,8 +32,6 @@ public class Challenge {
 
         if (a.length() != b.length()) return false;
 
-        System.out.println(a);
-        System.out.println(b);
         List<String> alphabet = CommonUtils.getAlphabet("lower");
 
         char[] charsA = a.toCharArray();
@@ -46,7 +48,7 @@ public class Challenge {
                 alphabetMap1.put(k, o);
             }
         }
-        System.out.println(CommonUtils.objMapToJson(alphabetMap1));
+        log.info(CommonUtils.objMapToJson(alphabetMap1));
 
         Arrays.sort(charsA);
         Arrays.sort(charsB);
@@ -59,7 +61,7 @@ public class Challenge {
         return true;
     }
 
-    public static void countWords(String str) {
+    public static int countWords(String str) {
 
         String str1 = str.toLowerCase(Locale.ROOT);
         String[] words = str1.split(" ");
@@ -73,12 +75,12 @@ public class Challenge {
                 intMap.put(words[i], 1);
             }
         }
-        System.out.println(CommonUtils.intMapToJson(intMap));
+        log.info(CommonUtils.intMapToJson(intMap));
+        return words.length;
 
     }
 
-    public static void countChars(String str) {
-        System.out.println(str);
+    public static int countChars(String str) {
         HashMap<String, Integer> intMap = new HashMap<>();
         try {
             char[] chars = str.toCharArray();
@@ -95,7 +97,9 @@ public class Challenge {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        System.out.println(CommonUtils.intMapToJson(intMap));
+
+        log.info(CommonUtils.intMapToJson(intMap));
+        return intMap.size();
     }
 
     public static int minJumps(int[] arr) {
