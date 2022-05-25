@@ -5,6 +5,7 @@ import net.minidev.json.JSONObject;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommonUtils {
 
@@ -26,23 +27,42 @@ public class CommonUtils {
         if (strNum == null) {
             return false;
         }
+        System.out.println("isInteger|"+strNum+"|");
         Pattern pattern = Pattern.compile("-?\\d+");
         return pattern.matcher(strNum).matches();
     }
 
-    public static Optional<int[]> stringToInts(String str) {
-        String[] strArr = str.split(",");
-        int[] arrInt = new int[strArr.length];
-        int i = 0;
-        for (String s : strArr) {
+    public static Optional<int[]> stringsToInts(String str) {
+        List<String> list = Arrays.stream(str.split(",")).collect(Collectors.toList());
+        int[] arrInts = new int[list.size()];
+
+        int idx = 0;
+        for(String s : list){
             s = s.trim();
-            if (!CommonUtils.isInteger(s)) {
-                System.out.println("non integer chars found in array of strings");
-                return Optional.of(new int[0]);
+            if (CommonUtils.isInteger(s)) {
+                int i = Integer.parseInt(s);
+                arrInts[idx++] = i;
+            } else {
+                arrInts = new int[0];
+                break;
             }
-            arrInt[i++] = Integer.parseInt(s);
         }
-        return Optional.of(arrInt);
+        // return (list.size() == idx) ? Optional.of(arrInts) : Optional.of(new int[0]);
+        return Optional.of(arrInts);
+
+//      Old Java
+//        String[] strArr = str.split(",");
+//        int[] arrInts = new int[strArr.length];
+//        int i = 0;
+//        for (String s : strArr) {
+//            s = s.trim();
+//            if (!CommonUtils.isInteger(s)) {
+//                System.out.println("non integer chars found in array of strings");
+//                return Optional.of(new int[0]);
+//            }
+//            arrInt[i++] = Integer.parseInt(s);
+//        }
+//        return Optional.of(arrInts);
     }
 
     public static List<String> getAlphabet(String typeCase) {
