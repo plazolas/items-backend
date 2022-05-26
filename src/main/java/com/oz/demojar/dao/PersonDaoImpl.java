@@ -128,19 +128,18 @@ class PersonDaoImpl implements PersonDao {
     @Override
     public Person updatePerson(Person person) {
         Long cid = (person.getCountry() == null) ? null : person.getCountry().getId();
-        System.out.println(cid);
-        System.out.println("my new person: "+person);
-        int success = personRepository.updatePerson(
-                person.getId(),
-                person.getFirstName(),
-                person.getLastName(),
-                cid,
-                person.getAge(),
-                person.getPosition(),
-                person.getBoss()
-        );
-        System.out.println("update succeded: "+ success);
-        return person;
+
+            int success = personRepository.updatePerson(
+                    person.getId(),
+                    person.getFirstName(),
+                    person.getLastName(),
+                    cid,
+                    person.getAge(),
+                    person.getPosition(),
+                    person.getBoss()
+            );
+
+        return (success > 0) ? person : null;
     }
 
     @Override

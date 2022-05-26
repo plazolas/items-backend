@@ -114,19 +114,18 @@ public class PersonController {
 
     @PutMapping(path = "/p/{id}")
     public ResponseEntity<Person> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
-        System.out.println("details: " + personDetails);
         Person person = personService.getPersonById(id)
                 .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
-        System.out.println("old: " + person);
 
         person.setPassport(personDetails.getPassport());
         person.setCountry(personDetails.getCountry());
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
         person.setAge(personDetails.getAge());
-        person.setPosition(personDetails.getPosition());
+        person.setPosition(personDetails.getPosition() == null ? "Janitor" : personDetails.getPosition());
+        person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
 
-        Person updatedPerson = personService.updatePersonById(personDetails.getId(), person);
+        Person updatedPerson = personService.updatePerson(person);
 
         if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
 

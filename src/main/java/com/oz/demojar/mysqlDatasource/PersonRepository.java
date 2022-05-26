@@ -41,7 +41,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "position = ?6,  " +
             "boss = ?7  " +
             "WHERE p.id  = ?1",
-            countQuery = "SELECT * FROM person WHERE id = ?3",
+            countQuery = "SELECT * FROM person WHERE id = ?1",
             nativeQuery = true)
     int updatePerson(
             Long id,

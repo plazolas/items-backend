@@ -4,8 +4,6 @@ import com.oz.demojar.dao.UserDao;
 import com.oz.demojar.model.User;
 import com.oz.demojar.security.StartupProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,16 +11,14 @@ import java.util.List;
 @Service
 final class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
 
-    private BCrypt bCrypt = User.bCrypt();
-
     @Autowired
     StartupProperties startupProperties;
 
     @Autowired
-    private UserDao userRepo;
+    private final UserDao userRepo;
 
     @Autowired
-    private void UserServiceImpl(UserDao userDao) {
+    private UserServiceImpl(UserDao userDao) {
         this.userRepo = userDao;
     }
 
