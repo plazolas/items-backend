@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,8 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-// @ContextConfiguration(classes = BinaryTreeTests.class)
-@ActiveProfiles(value="dev")
+@ActiveProfiles(value = "dev")
 public class ChallengeTests {
 
     private static final Logger log = LoggerFactory.getLogger(BinaryTreeTests.class);
@@ -92,10 +94,35 @@ public class ChallengeTests {
     @DisplayName("Test for chars and words")
     public void testMinJumps() {
 
-        int[] jumpArr = new int[] {2, 3, 1, 1, 2, 4, 2, 0, 1, 1};
+        int[] jumpArr = new int[]{2, 3, 1, 1, 2, 4, 2, 0, 1, 1};
         // int jumps = Challenge.minJumps(jumpArr);
 
-        assertTrue(true,"to do");
+        assertTrue(true, "to do");
 
+    }
+
+    @Test
+    @DisplayName("Java 8 exercise")
+    public void generic() {
+        int n = 0;
+
+        while(n<21) {
+            List<Integer> range = IntStream.range(10, n + 1)
+                    .boxed()
+                    .collect(Collectors.toList());
+            n+= 10;
+            System.out.println("rangeList:" + range);
+        }
+
+
+        List<String> numbers = Arrays.asList("1", "2", "3", "4", "5", "6");
+        System.out.println("Original list: " + numbers);
+
+        List<Integer> even = numbers.stream()
+                .map(Integer::valueOf)
+                .filter(number -> number % 2 == 0)
+                .collect(Collectors.toList());
+
+        System.out.println("processed list, only even numbers: " + even);
     }
 }
