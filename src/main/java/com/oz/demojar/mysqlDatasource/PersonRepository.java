@@ -29,7 +29,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query(value = "UPDATE person p SET last_name = ?1, first_name = ?2 WHERE p.id  = ?3",
             countQuery = "SELECT * FROM person WHERE id = ?3",
             nativeQuery = true)
-    Object updateShortById(String lastname, String firstname, Long id);
+    int updateShortById(String lastname, String firstname, Long id);
 
     @Modifying
     @Transactional
