@@ -121,8 +121,8 @@ public class PersonController {
         person.setCountry(personDetails.getCountry());
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
-        person.setAge(personDetails.getAge());
-        person.setPosition(personDetails.getPosition() == null ? "Janitor" : personDetails.getPosition());
+        person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
+        person.setPosition(personDetails.getPosition() == null ? "Secretary" : personDetails.getPosition());
         person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
 
         Person updatedPerson = personService.updatePerson(person);
