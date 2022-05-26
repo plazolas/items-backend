@@ -1,6 +1,5 @@
 package com.oz.demojar.dao;
 
-import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -73,45 +72,13 @@ class PersonDaoImpl implements PersonDao {
     @Override
     public List<Person> selectAllPeople() {
         List<Person> persons = personRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-        Query query = em.createQuery("From Person");
+        // Query query = em.createQuery("From Person");
         //List<Person> persons = query.getResultList();
         //Collections.sort(persons, Comparator.comparing(p -> (p.getLastName() == null) ? "" : p.getLastName().toLowerCase()));
         //return persons;
-
         // sorted without lower case
-        //return  personDAO.findAll().stream().sorted(Comparator.comparing(Person::getLastName)).collect(Collectors.toList());
-
-//
-//        int n = 0;
-//        List<Integer> rangeList = new ArrayList<>();
-//        List<Integer> range= IntStream.range(10,n + 1)
-//                .filter(i -> i % 2 > 0)
-//                .boxed()
-//                .collect(Collectors.toList());
-//
-//        rangeList.addAll(range);
-//
-//        System.out.println("rangeList:" + rangeList);
-//
-//        List<Integer> IntList = IntStream.range(1,n + 1)
-//                .filter(i -> i % 3 == 0)
-//                .boxed()
-//                .collect(Collectors.toList());
-//
-//        System.out.println("IntList:" + IntList);
-//
-//        List<String> numbers = Arrays.asList("1", "2", "3", "4", "5", "6");
-//        System.out.println("original list: " + numbers);
-//
-//        List<Integer> even = numbers.stream()
-//                .map(s -> Integer.valueOf(s))
-//                .filter(number -> number % 2 == 0)
-//                .collect(Collectors.toList());
-//
-//        System.out.println("processed list, only even numbers: " + even);
-
+        //return  personRepository.findAll().stream().sorted(Comparator.comparing(Person::getLastName)).collect(Collectors.toList());
         return persons;
-
     }
 
     @Override
@@ -127,7 +94,7 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person updatePerson(Person person) {
-        Long cid = (person.getCountry() == null) ? null : person.getCountry().getId();
+        long cid = (person.getCountry() == null) ? 50 : person.getCountry().getId();
 
             int success = personRepository.updatePerson(
                     person.getId(),
@@ -138,13 +105,12 @@ class PersonDaoImpl implements PersonDao {
                     person.getPosition(),
                     person.getBoss()
             );
-
+        if(success > 0) System.out.println("person update success");
         return (success > 0) ? person : null;
     }
 
     @Override
-    public Person updatePersonById(Long id, Person person) {
-        System.out.println("NNNNew: "+person);
+    public Person updatePersonById(Long id, Person person) {;
         Person oldPerson = new Person();
         try {
             oldPerson = personRepository.getById(id);
@@ -152,7 +118,6 @@ class PersonDaoImpl implements PersonDao {
             System.out.println(e.getMessage());
             e.getStackTrace();
         }
-        System.out.println("OOOOld: "+oldPerson);
 
         if(!oldPerson.isValid()) {
             return null;
