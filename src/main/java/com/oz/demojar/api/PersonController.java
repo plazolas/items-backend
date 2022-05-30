@@ -8,7 +8,6 @@ import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
-import com.oz.demojar.utils.BinaryTree;
 import com.oz.demojar.utils.GetIpAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -26,9 +25,6 @@ import javax.validation.*;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.oz.demojar.utils.CommonUtils;
-import com.oz.demojar.challenge.Challenge;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -74,10 +70,10 @@ public class PersonController {
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
         Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(),
                 person.getCountry(), person.getPosition(), person.getAge(), person.getBoss());
-        if (savedPerson instanceof Person) {
-            return new ResponseEntity<Person>(savedPerson, HttpStatus.CREATED);
-        } else {
+        if (savedPerson == null) {
             return new ResponseEntity<Person>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<Person>(savedPerson, HttpStatus.CREATED);
         }
     }
 
@@ -85,8 +81,7 @@ public class PersonController {
     public List<Person> getAllPersons() {
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
-        List<Person> persons = personService.getAllPeople();
-        return persons;
+        return personService.getAllPeople();
     }
 
     @GetMapping(path = "/search/{term}")
@@ -98,7 +93,7 @@ public class PersonController {
     @GetMapping(path = "/anns")
     public List<Person> getAllAnns() {
         Collection<Person> persons = personService.findAllAnns();
-        return persons.stream().collect(Collectors.toList());
+        return new ArrayList<>(persons);
     }
 
     @GetMapping(path = "{id}")
@@ -149,7 +144,7 @@ public class PersonController {
     public List<Person> getPeopleByCountry(@PathVariable("cid") Long cid) {
         System.out.println("cid :" + cid);
         Collection<Person> persons = personService.findPersonsWithPassportsByCountry(cid);
-        return persons.stream().collect(Collectors.toList());
+        return new ArrayList<>(persons);
     }
 
     @GetMapping(params = {"page", "size"})
@@ -157,14 +152,12 @@ public class PersonController {
                                       @RequestParam("size") int size,
                                       UriComponentsBuilder uriBuilder,
                                       HttpServletResponse response) {
-        List<Person> resultPage = personService.findPaginated(page, size);
-        return resultPage;
+        return personService.findPaginated(page, size);
     }
 
     @GetMapping("/massupdate")
     public List<Person> massUpdate() {
-        List<Person> resultPage = personService.massUpdate();
-        return resultPage;
+        return personService.massUpdate();
     }
 
     @GetMapping("/findlast")
@@ -248,7 +241,7 @@ public class PersonController {
 
     @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
             DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
-    public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {
+    public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
 
 
         Class<?> c = ex.getClass();
@@ -256,12 +249,11 @@ public class PersonController {
         String[] parts = fullClassName.split("\\.");
         String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
 
-        System.out.println("Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
-
         HttpStatus httpStatus;
         switch (exName) {
             case "InvalidDataAccessApiUsageException":
             case "MethodArgumentTypeMismatchException":
+            case "HttpMessageNotReadableException":
                 httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case "DataIntegrityViolationException":
@@ -281,7 +273,10 @@ public class PersonController {
                 httpStatus = HttpStatus.NOT_FOUND;
 
         }
-        return new ResponseEntity(ex.getMessage(), httpStatus);
+        System.out.println("Request: " + req.getRequestURL() +
+                " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
+        String message = ex.getMessage() + "--" + exName;
+        return new ResponseEntity(message, httpStatus);
     }
 
 
