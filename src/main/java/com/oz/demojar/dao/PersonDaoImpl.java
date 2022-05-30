@@ -94,6 +94,7 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person updatePerson(Person person) {
+        System.out.println(person);
         long cid = (person.getCountry() == null) ? 50 : person.getCountry().getId();
 
             int success = personRepository.updatePerson(
