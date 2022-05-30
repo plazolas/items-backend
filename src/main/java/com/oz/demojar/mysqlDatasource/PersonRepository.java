@@ -34,8 +34,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE person p SET " +
-            "first_name = ?3,  " +
-            "last_name = ?2,  " +
+            "first_name = ?2,  " +
+            "last_name = ?3,  " +
             "country_id = ?4,  " +
             "age = ?5,  " +
             "position = ?6,  " +
