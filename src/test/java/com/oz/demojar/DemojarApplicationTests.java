@@ -59,7 +59,7 @@ class DemojarApplicationTests {
 	@Test
 	@DisplayName("All items should be fetched")
 	public void testGetAllItems() {
-		List<Person> person = this.personService.getAllPeople();
+		List<Person> person = this.personService.getAllPersons();
 		log.info(String.valueOf(person.size()));
 		assertEquals(61, person.size(),
 				"All items were included");

@@ -85,7 +85,10 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getAllPersons() {
-        System.out.println("PersonController.getAllPersons: ");
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        String msg = PersonController.class.getName() + ":" + methodName;
+        System.out.println(msg);
+
         System.out.println(appProperties);
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
