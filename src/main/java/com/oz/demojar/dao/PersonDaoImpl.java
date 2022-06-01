@@ -38,14 +38,6 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person addPerson(String firstName, String lastName, Country country, String position, Integer age, Integer boss) {
-        Country c = null;
-        if(country.getId() != null) {
-            c = countryRepository.getById(country.getId());
-        } else if (country.getName() != null) {
-            c = countryRepository.findByName(country.getName()).get();
-        } else {
-            return null;
-        }
 
         try {
             Person person = new Person(firstName, lastName, country, position, age, boss);
@@ -70,7 +62,7 @@ class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public List<Person> selectAllPeople() {
+    public List<Person> selectAllPersons() {
         List<Person> persons = personRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         // Query query = em.createQuery("From Person");
         //List<Person> persons = query.getResultList();
@@ -113,29 +105,22 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person updatePersonById(Long id, Person person) {;
-        Person oldPerson = new Person();
-        try {
-            oldPerson = personRepository.getById(id);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.getStackTrace();
-        }
+
+        Person oldPerson = personRepository.getById(id);
 
         if(!oldPerson.isValid()) {
             return null;
         } else {
+            if(person.getFirstName()   == null) person.setFirstName(oldPerson.getFirstName());
+            if(person.getLastName()   == null) person.setLastName(oldPerson.getLastName());
             if(person.getCountry()   == null) person.setCountry(oldPerson.getCountry());
             if(person.getPassport()  == null && oldPerson.getPassport() != null) person.setPassport(oldPerson.getPassport());
             if(person.getAge()  == null && oldPerson.getAge() != null) person.setAge(oldPerson.getAge());
             if(person.getPosition()  == null && oldPerson.getPosition() != null) person.setPosition(oldPerson.getPosition());
             if(person.getBoss()  == null && oldPerson.getBoss() != null) person.setPosition(oldPerson.getPosition());
-
-            ///personRepository.delete(oldPerson);
         }
 
-        int p = 0;
-        try {
-            p = personRepository.updatePerson(
+            int result = personRepository.updatePerson(
                     person.getId(),
                     person.getFirstName(),
                     person.getLastName(),
@@ -145,13 +130,8 @@ class PersonDaoImpl implements PersonDao {
                     person.getBoss(),
                     person.getUpdated()
             );
+            if (result == 0) throw new RuntimeException(PersonDaoImpl.class.getName() + ":updatePersonById");
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.getStackTrace();
-        }
-
-        System.out.println(p);
 
         return person;
     }

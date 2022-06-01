@@ -13,7 +13,7 @@ public interface PersonDao {
 
     Person addPerson(String firstName, String lastName, Country country, String position, Integer age, Integer boss);
 
-    List<Person> selectAllPeople();
+    List<Person> selectAllPersons();
 
     int deletePersonById(Long id);
 

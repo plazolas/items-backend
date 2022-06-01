@@ -85,9 +85,11 @@ public class PersonController {
 
     @GetMapping
     public List<Person> getAllPersons() {
+        System.out.println("PersonController.getAllPersons: ");
+        System.out.println(appProperties);
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
-        return personService.getAllPeople();
+        return personService.getAllPersons();
     }
 
     @GetMapping(path = "/search/{term}")

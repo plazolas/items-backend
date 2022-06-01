@@ -1,13 +1,13 @@
 package com.oz.demojar.config;
 
-import lombok.Getter;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-@Getter
+@Data
 @Component
-@PropertySource("classpath:application-dev.properties")
+@PropertySource("classpath:application.properties")
 public class AppProperties {
     @Value("${spring.datasource.datetime}")
     private String datetime;
@@ -15,11 +15,9 @@ public class AppProperties {
     @Value("${spring.datasource.timezone}")
     private String timezone;
 
-    @Override
-    public String toString() {
-        return "AppProperties [" +
-                "datetime = " + datetime + "," +
-                "timezone = " + timezone +
-                "]";
-    }
+    @Value("${server.port}")
+    private String port;
+
+    @Value("${server.contextPath}")
+    private String contextPath;
 }

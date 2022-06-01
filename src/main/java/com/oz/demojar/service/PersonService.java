@@ -45,8 +45,8 @@ public class PersonService {
         return personDao.addPerson(firstName, lastName, country, position, age, boss);
     }
 
-    public List<Person> getAllPeople() {
-        return personDao.selectAllPeople();
+    public List<Person> getAllPersons() {
+        return personDao.selectAllPersons();
     }
 
     public Optional<Person> getPersonById(Long id) {

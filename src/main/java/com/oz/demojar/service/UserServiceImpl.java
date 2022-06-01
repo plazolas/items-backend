@@ -2,7 +2,6 @@ package com.oz.demojar.service;
 
 import com.oz.demojar.dao.UserDao;
 import com.oz.demojar.model.User;
-import com.oz.demojar.security.StartupProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +9,6 @@ import java.util.List;
 
 @Service
 final class UserServiceImpl implements UserService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
-
-    @Autowired
-    StartupProperties startupProperties;
 
     @Autowired
     private final UserDao userRepo;
