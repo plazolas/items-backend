@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -17,8 +18,8 @@ import lombok.*;
 import org.hibernate.internal.util.ZonedDateTimeComparator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
 
 @Getter
 @Setter
@@ -26,8 +27,8 @@ import org.springframework.core.env.Environment;
 @NoArgsConstructor
 public class PersonDTO implements Serializable {
 
-    @Autowired
-    private static Environment env;
+    // Does not get autowired!!
+    private AppProperties appProperties;
 
     private Long id;
 
@@ -98,37 +99,39 @@ public class PersonDTO implements Serializable {
         this.boss = person.getBoss();
     }
 
-    public String DateToString(LocalDateTime localDateTime) {
+    private String DateToString(LocalDateTime localDateTime) {
+        String dateTimeFormat = appProperties.getDatetime();
+        String dateTimeZone = appProperties.getTimezone();
         DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern(Objects.requireNonNull(env.getProperty("spring.datasource.datetime")));
-        String timezone = Objects.requireNonNull(env.getProperty("spring.datasource.datetime"));
+                DateTimeFormatter.ofPattern(Objects.requireNonNull(dateTimeFormat));
+        String timezone = Objects.requireNonNull(dateTimeFormat);
 
         if (localDateTime == null) localDateTime = LocalDateTime.now();
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(timezone));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(dateTimeZone));
         DateTimeFormatter formatter = dateTimeFormatter;
         return  zonedDateTime.format(formatter);
     }
 
-    public static String DateToString() {
+    private String DateToString() {
+
+        // TODO: FIX
+        String dateTimeFormat = appProperties.getDatetime();
+        String dateTimeZone = appProperties.getTimezone();
         DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern(Objects.requireNonNull(env.getProperty("spring.datasource.datetime")));
-        String timezone = Objects.requireNonNull(env.getProperty("spring.datasource.datetime"));
+                DateTimeFormatter.ofPattern(Objects.requireNonNull(dateTimeFormat));
+        String timezone = Objects.requireNonNull(dateTimeFormat);
 
         LocalDateTime localDateTime = LocalDateTime.now();
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(timezone));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(dateTimeZone));
         DateTimeFormatter formatter = dateTimeFormatter;
         return  zonedDateTime.format(formatter);
     }
 
-//    public void setSubmissionDate(Date date, String timezone) {
-//        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-//        this.updated = dateFormat.format(date);
-//    }
+    public Person convertToEntity(AppProperties appProperties, PersonDTO personDetails) throws NoSuchElementException {
 
-    public static Person convertToEntity(PersonDTO personDetails) throws NoSuchElementException {
-
+        this.appProperties = appProperties;
         Person person = new Person();
 
         person.setId(personDetails.getId());
@@ -137,14 +140,12 @@ public class PersonDTO implements Serializable {
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
         person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
-        person.setPosition(personDetails.getPosition() == null ? "Secretary" : personDetails.getPosition());
+        person.setPosition(personDetails.getPosition() == null ? "Management" : personDetails.getPosition());
         person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
 
-        // System.out.println(DateToString());
+        // testing Java 8 date formats --> NOT WORKING
+        // System.out.println(this.DateToString());
         person.setUpdated(LocalDateTime.now());
-
-        System.out.println("person:");
-        System.out.println(person);
 
         return person;
     }

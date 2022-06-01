@@ -1,5 +1,6 @@
 package com.oz.demojar.api;
 
+import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
@@ -40,10 +41,8 @@ public class PersonController {
     //private final Validator validator;
 
     @Autowired
-    private Environment env;
-    @Autowired
-//    private ModelMapper modelMapper = new ModelMapper();
-//    @Autowired
+    private final AppProperties appProperties = new AppProperties();
+
     private StartupProperties startupProperties;
     @Autowired
     private transient CountryService countryService;
@@ -123,7 +122,7 @@ public class PersonController {
                 .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
 
         try {
-            Person updatedPerson = personService.updatePerson(PersonDTO.convertToEntity(personDetails));
+            Person updatedPerson = personService.updatePerson(personDetails.convertToEntity(appProperties, personDetails));
             if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
 
             return ResponseEntity.ok(updatedPerson);
