@@ -2,23 +2,19 @@ package com.oz.demojar.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonSerialize
+@Builder
 @Entity
 @Table(name="country")
-@Getter
-@Setter
-@JsonSerialize
 public class Country {
 
     //private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -40,8 +36,6 @@ public class Country {
     @JsonIgnore
     @OneToMany(mappedBy = "country", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Passport> passports = new ArrayList<>();
-
-    public Country () {}
 
     public Country (String name) {
         this.name = name;

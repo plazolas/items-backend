@@ -2,26 +2,20 @@ package com.oz.demojar.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.oz.demojar.security.SecurityConfiguration;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "user")
-@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonSerialize
+@Builder
+@Entity
+@Table(name="user")
 public class User  {
 
     @Id
@@ -42,8 +36,6 @@ public class User  {
     @JsonProperty("roles")
     private String roles;
 
-    public User(){}
-
     public User(String username, String password, String roles) {
         setId(0L);
         setUsername(username);
@@ -53,13 +45,6 @@ public class User  {
     }
     public User(String username, String password, boolean active, String roles) {
         setId(0L);
-        setUsername(username);
-        setPassword(password);
-        setActive(active);
-        setRoles(roles);
-    }
-    public User(Long id, String username, String password, boolean active, String roles) {
-        setId(id);
         setUsername(username);
         setPassword(password);
         setActive(active);

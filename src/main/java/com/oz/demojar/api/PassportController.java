@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
 
-
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/passport")
 @RestController
 public class PassportController {

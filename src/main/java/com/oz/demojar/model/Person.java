@@ -9,16 +9,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.oz.demojar.dto.PersonDTO;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonSerialize
+@Builder
+@Entity
 @Table(name="person")
 public class Person {
 
@@ -124,9 +123,4 @@ public class Person {
         return this.id != null && this.firstName != null && this.lastName != null;
     }
 
-    @Override
-    public String toString() {
-        return "Person {id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' +
-                ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + '}';
-    }
 }

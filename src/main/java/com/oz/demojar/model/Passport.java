@@ -1,20 +1,20 @@
 package com.oz.demojar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.io.Serializable;
+import javax.validation.constraints.*;;
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonSerialize
+@Builder
 @Entity
 @Table(name="passport")
-@Getter
-@Setter
-@JsonSerialize
 public class Passport {
 
     @Id
@@ -38,8 +38,6 @@ public class Passport {
     @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
 
-    public Passport(){}
-
     public Passport(String number, LocalDate expDate, Person person) {
         this.number = number;
         this.expDate = expDate;
@@ -47,8 +45,4 @@ public class Passport {
         this.country = person.getCountry();
     }
 
-    @Override
-    public String toString() {
-        return "Passport{id=" + id + ", number='" + number + '\'' + ", expDate=" + expDate  + '}';
-    }
 }

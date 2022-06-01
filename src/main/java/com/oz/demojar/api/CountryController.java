@@ -33,12 +33,10 @@ public class CountryController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<Country> selectCountryById(@PathVariable("id") Long id) throws Exception {
-       Optional<Country> countryOpt = countryService.getCountryById(id);
-       if(countryOpt.isPresent()) {
-           return ResponseEntity.ok().body(countryOpt.get());
-       } else {
-           throw new ObjectNotFoundException("Unable to locate country with id: " + id.toString());
-       }
+       Country country = countryService.getCountryById(id)
+               .orElseThrow((() -> new ObjectNotFoundException("Country " + id + " does not exits.")));
+        System.out.println(country);
+       return ResponseEntity.ok().body(country);
     }
 
     @GetMapping(path = "/test")
