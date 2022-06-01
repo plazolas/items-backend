@@ -4,16 +4,17 @@ import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.service.PassportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 
 @RequestMapping("api/vi/passport")
 @RestController
@@ -53,6 +54,46 @@ public class PassportController {
     public int updatePassportById(@PathVariable("id") Long id, @RequestBody Passport passport) {
         passportService.updatePassportById(id, passport);
         return 1;
+    }
+
+    @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
+            DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
+    public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
+
+
+        Class<?> c = ex.getClass();
+        String fullClassName = c.getName();
+        String[] parts = fullClassName.split("\\.");
+        String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
+
+        HttpStatus httpStatus;
+        switch (exName) {
+            case "InvalidDataAccessApiUsageException":
+            case "MethodArgumentTypeMismatchException":
+            case "HttpMessageNotReadableException":
+                httpStatus = HttpStatus.BAD_REQUEST;
+                break;
+            case "DataIntegrityViolationException":
+            case "NumberFormatException":
+                httpStatus = HttpStatus.CONFLICT;
+                break;
+            case "SQLException":
+            case "DataAccessException":
+            case "JpaSystemException":
+            case "ArrayIndexOutOfBoundsException":
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                break;
+            case "NoSuchElementException":
+                httpStatus = HttpStatus.NO_CONTENT;
+                break;
+            default:
+                httpStatus = HttpStatus.NOT_FOUND;
+
+        }
+        System.out.println("Request: " + req.getRequestURL() +
+                " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
+        String message = ex.getMessage() + "--" + exName;
+        return new ResponseEntity(message, httpStatus);
     }
 
 }

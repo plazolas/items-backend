@@ -13,16 +13,12 @@ import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
-import com.oz.demojar.service.PersonService;
 import lombok.*;
 import org.hibernate.internal.util.ZonedDateTimeComparator;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonDTO implements Serializable {
@@ -167,12 +163,6 @@ public class PersonDTO implements Serializable {
 
     public boolean isValid() {
         return this.id != null && this.firstname != null && this.lastname != null;
-    }
-
-    @Override
-    public String toString() {
-        return "PersonDTO {id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' +
-                ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + ", boss=" + boss + '}';
     }
 
     @Bean

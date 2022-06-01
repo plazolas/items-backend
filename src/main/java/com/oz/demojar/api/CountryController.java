@@ -46,11 +46,10 @@ public class CountryController {
         return "country test done!";
     }
 
-    @ExceptionHandler({ Exception.class, SQLException.class, DataAccessException.class,
-                        DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
-    public ResponseEntity<Object> errorHandler(HttpServletRequest req, Exception ex) {
+    @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
+            DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
+    public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
 
-        System.out.println( "Request: " + req.getRequestURL() + " raised " + ex + "\n" + ex.getMessage());
 
         Class<?> c = ex.getClass();
         String fullClassName = c.getName();
@@ -61,19 +60,30 @@ public class CountryController {
         switch (exName) {
             case "InvalidDataAccessApiUsageException":
             case "MethodArgumentTypeMismatchException":
+            case "HttpMessageNotReadableException":
                 httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case "DataIntegrityViolationException":
+            case "NumberFormatException":
                 httpStatus = HttpStatus.CONFLICT;
                 break;
             case "SQLException":
             case "DataAccessException":
+            case "JpaSystemException":
+            case "ArrayIndexOutOfBoundsException":
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                break;
+            case "NoSuchElementException":
+                httpStatus = HttpStatus.NO_CONTENT;
                 break;
             default:
                 httpStatus = HttpStatus.NOT_FOUND;
+
         }
-        return new ResponseEntity(ex.getMessage(), httpStatus);
+        System.out.println("Request: " + req.getRequestURL() +
+                " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
+        String message = ex.getMessage() + "--" + exName;
+        return new ResponseEntity(message, httpStatus);
     }
 
 //    @ControllerAdvice

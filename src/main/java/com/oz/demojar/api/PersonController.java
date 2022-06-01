@@ -10,9 +10,7 @@ import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -28,8 +26,9 @@ import javax.validation.*;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toMap;
+import org.modelmapper.ModelMapper;
+
 
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/person")
@@ -37,6 +36,7 @@ import static java.util.stream.Collectors.toMap;
 public class PersonController {
 
     private final String cors = "http://www.ozdev.net";
+
     private final HttpServletRequest request;
     //private final Validator validator;
 
@@ -44,6 +44,7 @@ public class PersonController {
     private final AppProperties appProperties = new AppProperties();
 
     private StartupProperties startupProperties;
+
     @Autowired
     private transient CountryService countryService;
     @Autowired
