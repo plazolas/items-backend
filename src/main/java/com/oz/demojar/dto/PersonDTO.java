@@ -1,16 +1,33 @@
 package com.oz.demojar.dto;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
+import com.oz.demojar.service.PersonService;
 import lombok.*;
+import org.hibernate.internal.util.ZonedDateTimeComparator;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonDTO implements Serializable {
+
+    @Autowired
+    private static Environment env;
 
     private Long id;
 
@@ -25,10 +42,8 @@ public class PersonDTO implements Serializable {
     private Integer boss;
 
     private Country country = new Country();
-    
-    private Passport passport;
 
-    public PersonDTO() {}
+    private Passport passport;
 
     public PersonDTO(String firstname, String lastname, Country country, String position, int age, int boss) {
         this.firstname = firstname;
@@ -83,6 +98,57 @@ public class PersonDTO implements Serializable {
         this.boss = person.getBoss();
     }
 
+    public String DateToString(LocalDateTime localDateTime) {
+        DateTimeFormatter dateTimeFormatter =
+                DateTimeFormatter.ofPattern(Objects.requireNonNull(env.getProperty("spring.datasource.datetime")));
+        String timezone = Objects.requireNonNull(env.getProperty("spring.datasource.datetime"));
+
+        if (localDateTime == null) localDateTime = LocalDateTime.now();
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(timezone));
+        DateTimeFormatter formatter = dateTimeFormatter;
+        return  zonedDateTime.format(formatter);
+    }
+
+    public static String DateToString() {
+        DateTimeFormatter dateTimeFormatter =
+                DateTimeFormatter.ofPattern(Objects.requireNonNull(env.getProperty("spring.datasource.datetime")));
+        String timezone = Objects.requireNonNull(env.getProperty("spring.datasource.datetime"));
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(timezone));
+        DateTimeFormatter formatter = dateTimeFormatter;
+        return  zonedDateTime.format(formatter);
+    }
+
+//    public void setSubmissionDate(Date date, String timezone) {
+//        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+//        this.updated = dateFormat.format(date);
+//    }
+
+    public static Person convertToEntity(PersonDTO personDetails) throws NoSuchElementException {
+
+        Person person = new Person();
+
+        person.setId(personDetails.getId());
+        person.setPassport(personDetails.getPassport());
+        person.setCountry(personDetails.getCountry());
+        person.setFirstName(personDetails.getFirstname());
+        person.setLastName(personDetails.getLastname());
+        person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
+        person.setPosition(personDetails.getPosition() == null ? "Secretary" : personDetails.getPosition());
+        person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
+
+        // System.out.println(DateToString());
+        person.setUpdated(LocalDateTime.now());
+
+        System.out.println("person:");
+        System.out.println(person);
+
+        return person;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -105,7 +171,12 @@ public class PersonDTO implements Serializable {
     @Override
     public String toString() {
         return "PersonDTO {id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' +
-                ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + ", boss=" + boss +'}';
+                ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + ", boss=" + boss + '}';
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }
 

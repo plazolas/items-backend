@@ -5,10 +5,13 @@ import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.oz.demojar.dto.PersonDTO;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Getter
@@ -45,6 +48,10 @@ public class Person {
     @JsonProperty("boss")
     @Column
     private Integer boss;
+
+    @LastModifiedDate
+    @Column(name = "updated")
+    private LocalDateTime updated;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="country_id", referencedColumnName = "id")
@@ -98,16 +105,6 @@ public class Person {
         this.boss = boss;
     }
 
-    public Person(PersonDTO person) {
-        this.firstName = person.getFirstname();
-        this.lastName = person.getLastname();
-        this.country = person.getCountry();
-        this.passport = person.getPassport();
-        this.position = person.getPosition();
-        this.age = person.getAge();
-        this.boss = person.getBoss();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -129,7 +126,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' +
+        return "Person {id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' +
                 ", country=" + country + ", passport=" + passport + ", position=" + position + ", age=" + age + '}';
     }
 }

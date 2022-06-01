@@ -9,7 +9,9 @@ import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -38,6 +40,10 @@ public class PersonController {
     //private final Validator validator;
 
     @Autowired
+    private Environment env;
+    @Autowired
+//    private ModelMapper modelMapper = new ModelMapper();
+//    @Autowired
     private StartupProperties startupProperties;
     @Autowired
     private transient CountryService countryService;
@@ -109,22 +115,25 @@ public class PersonController {
 
     @PutMapping(path = "/p/{id}")
     public ResponseEntity<Person> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
-        Person person = personService.getPersonById(id)
+        if(!Objects.equals(id, personDetails.getId())) {
+            throw new IllegalArgumentException("IDs don't match");
+        }
+
+        personService.getPersonById(personDetails.getId())
                 .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
 
-        person.setPassport(personDetails.getPassport());
-        person.setCountry(personDetails.getCountry());
-        person.setFirstName(personDetails.getFirstname());
-        person.setLastName(personDetails.getLastname());
-        person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
-        person.setPosition(personDetails.getPosition() == null ? "Secretary" : personDetails.getPosition());
-        person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
+        try {
+            Person updatedPerson = personService.updatePerson(PersonDTO.convertToEntity(personDetails));
+            if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
 
-        Person updatedPerson = personService.updatePerson(person);
+            return ResponseEntity.ok(updatedPerson);
 
-        if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
+        } catch (Exception e) {
+            e.getStackTrace();
+            System.out.println("catch: " + e.getMessage());
+            throw new NoSuchElementException("Item to update Exception.");
+        }
 
-        return ResponseEntity.ok(updatedPerson);
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")

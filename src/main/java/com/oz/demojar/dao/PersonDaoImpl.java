@@ -104,7 +104,8 @@ class PersonDaoImpl implements PersonDao {
                     cid,
                     person.getAge(),
                     person.getPosition(),
-                    person.getBoss()
+                    person.getBoss(),
+                    person.getUpdated()
             );
         if(success > 0) System.out.println("person update success");
         return (success > 0) ? person : null;
@@ -141,7 +142,8 @@ class PersonDaoImpl implements PersonDao {
                     person.getCountry().getId(),
                     person.getAge(),
                     person.getPosition(),
-                    person.getBoss()
+                    person.getBoss(),
+                    person.getUpdated()
             );
 
         } catch (Exception e) {

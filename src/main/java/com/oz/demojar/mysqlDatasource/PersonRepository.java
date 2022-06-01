@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +40,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "country_id = ?4,  " +
             "age = ?5,  " +
             "position = ?6,  " +
-            "boss = ?7  " +
+            "boss = ?7,  " +
+            "updated = ?8  " +
             "WHERE p.id  = ?1",
             countQuery = "SELECT * FROM person WHERE id = ?1",
             nativeQuery = true)
@@ -50,7 +52,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             long country_id,
             int age,
             String position,
-            int boss
+            int boss,
+            LocalDateTime updated
     );
 
     @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
