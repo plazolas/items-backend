@@ -136,7 +136,7 @@ public class Person {
         personDTO.setPassport(this.getPassport());
         personDTO.setCountry(this.getCountry());
         personDTO.setAge(this.getAge() == null ? 0 : this.getAge());
-        personDTO.setPosition(this.getPosition() == null ? "Management" : this.getPosition());
+        personDTO.setPosition(this.getPosition() == null ? "Slave" : this.getPosition());
         personDTO.setBoss(this.getBoss() == null ? 167 : this.getBoss());
 
         this.setUpdated(LocalDateTime.now());

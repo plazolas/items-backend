@@ -27,10 +27,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toMap;
-
 import org.modelmapper.ModelMapper;
-
 
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/person")
@@ -40,7 +37,6 @@ public class PersonController {
     private final String cors = "http://www.ozdev.net";
 
     private final HttpServletRequest request;
-    //private final Validator validator;
 
     @Autowired
     private final AppProperties appProperties = new AppProperties();
@@ -62,6 +58,7 @@ public class PersonController {
         //this.validator = factory.getValidator();
     }
 
+//      ** WARNING ** --> THIS GENERATES ADMIN USER!
 //    @GetMapping(path = "/genadmin")
 //    public ResponseEntity<User> genAdmin() {
 //
@@ -75,18 +72,18 @@ public class PersonController {
 //    }
 
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
-        Person savedPerson = personService.addPerson(person.getFirstName(), person.getLastName(),
-                person.getCountry(), person.getPosition(), person.getAge(), person.getBoss());
-        if (savedPerson == null) {
-            return new ResponseEntity<Person>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<PersonDTO> addPerson(@Valid @RequestBody Person personDTO) {
+        Person person = personService.addPerson(personDTO.getFirstName(), personDTO.getLastName(),
+                personDTO.getCountry(), personDTO.getPosition(), personDTO.getAge(), personDTO.getBoss());
+        if (person == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<Person>(savedPerson, HttpStatus.CREATED);
+            return new ResponseEntity<>(person.convertToDTO(), HttpStatus.CREATED);
         }
     }
 
     @GetMapping
-    public List<Person> getAllPersons() {
+    public List<PersonDTO> getAllPersons() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String msg = PersonController.class.getName() + ":" + methodName;
         System.out.println(msg);
@@ -94,7 +91,12 @@ public class PersonController {
         System.out.println(appProperties);
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
-        return personService.getAllPersons();
+
+        List<Person> personList = personService.getAllPersons();
+
+        return personList.stream()
+                .map(Person::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping(path = "/search/{term}")

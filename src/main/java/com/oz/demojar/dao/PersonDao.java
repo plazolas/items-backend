@@ -1,6 +1,5 @@
 package com.oz.demojar.dao;
 
-import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;

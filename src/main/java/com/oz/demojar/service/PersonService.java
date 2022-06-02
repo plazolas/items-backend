@@ -2,7 +2,6 @@ package com.oz.demojar.service;
 
 import com.oz.demojar.dao.PassportDao;
 import com.oz.demojar.dao.PersonDao;
-import com.oz.demojar.dto.PersonDTO;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  import org.springframework.data.domain.Page;
