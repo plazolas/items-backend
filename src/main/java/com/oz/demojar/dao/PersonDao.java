@@ -23,7 +23,7 @@ public interface PersonDao {
 
     Optional<Person> getPersonById(Long id);
 
-    void addPersonToCountry(Person p, Country c);
+    Person addPersonToCountry(Person p, Country c);
 
     Person setPassportToPerson(Passport passport, Person person);
 

@@ -26,7 +26,9 @@ import javax.validation.*;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toMap;
+
 import org.modelmapper.ModelMapper;
 
 
@@ -108,7 +110,7 @@ public class PersonController {
     }
 
     @GetMapping(path = "{id}")
-    public Person getPersonById(@PathVariable("id") Long id) {
+    public PersonDTO getPersonById(@PathVariable("id") Long id) {
         return personService.getPersonById(id)
                 .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
     }
@@ -120,7 +122,7 @@ public class PersonController {
 
     @PutMapping(path = "/p/{id}")
     public ResponseEntity<Person> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
-        if(!Objects.equals(id, personDetails.getId())) {
+        if (!Objects.equals(id, personDetails.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
 
@@ -128,7 +130,7 @@ public class PersonController {
                 .orElseThrow(() -> new NoSuchElementException("item " + id + " does not exits."));
 
         try {
-            Person updatedPerson = personService.updatePerson(personDetails.convertToEntity(appProperties, personDetails));
+            Person updatedPerson = personService.updatePerson(personDetails.convertToEntity(personDetails));
             if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
 
             return ResponseEntity.ok(updatedPerson);
@@ -143,15 +145,15 @@ public class PersonController {
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
     @CrossOrigin(origins = cors)
-    public int addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
-        Optional<Person> p = personService.getPersonById(pid);
-        Optional<Country> c = countryService.getCountryById(cid);
-        if (p.isPresent() && c.isPresent()) {
-            personService.addPersonToCountry(p.get(), c.get());
-            return 0;
-        } else {
-            return 1;
-        }
+    public Person addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
+        PersonDTO personDTO = personService.getPersonById(pid)
+                .orElseThrow(() -> new NoSuchElementException("Person id does not exist."));
+        Country country = countryService.getCountryById(cid)
+                .orElseThrow(() -> new NoSuchElementException("item to update NOT found."));
+        Person person = personDTO.convertToEntity(personDTO);
+
+        return personService.addPersonToCountry(person, country);
+
     }
 
     @PutMapping(path = "bycountry/{cid}", consumes = MediaType.APPLICATION_JSON_VALUE)

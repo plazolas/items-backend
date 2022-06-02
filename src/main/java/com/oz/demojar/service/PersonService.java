@@ -49,8 +49,12 @@ public class PersonService {
         return personDao.selectAllPersons();
     }
 
-    public Optional<Person> getPersonById(Long id) {
-        return personDao.getPersonById(id);
+    public Optional<PersonDTO> getPersonById(Long id) {
+        Person person = personDao.getPersonById(id)
+                .orElseThrow(() -> new NoSuchElementException("Could not find Person by id=" + id));
+        PersonDTO personDTO = person.convertToDTO(person);
+        System.out.println(personDTO);
+        return Optional.of(personDTO);
     }
 
     public Person updatePerson(Person person) {
@@ -67,8 +71,8 @@ public class PersonService {
         return personDao.deletePersonById(id);
     }
 
-    public void addPersonToCountry(Person p, Country c) {
-        personDao.addPersonToCountry(p,c);
+    public Person addPersonToCountry(Person person, Country country) {
+        return personDao.addPersonToCountry(person, country);
     }
 
     public Collection<Person> findAllAnns() {

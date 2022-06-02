@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import com.oz.demojar.config.AppProperties;
+import com.oz.demojar.dto.PersonDTO;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -121,6 +124,26 @@ public class Person {
 
     public boolean isValid() {
         return this.id != null && this.firstName != null && this.lastName != null;
+    }
+
+    public PersonDTO convertToDTO(Person person) throws NoSuchElementException {
+
+        PersonDTO personDTO = new PersonDTO();
+
+        personDTO.setId(person.getId());
+        personDTO.setFirstname(person.getFirstName());
+        personDTO.setLastname(person.getLastName());
+        personDTO.setPassport(person.getPassport());
+        personDTO.setCountry(person.getCountry());
+        personDTO.setAge(person.getAge() == null ? 0 : person.getAge());
+        personDTO.setPosition(person.getPosition() == null ? "Management" : person.getPosition());
+        personDTO.setBoss(person.getBoss() == null ? 167 : person.getBoss());
+
+        // testing Java 8 date formats --> NOT WORKING
+        // System.out.println(this.DateToString());
+        person.setUpdated(LocalDateTime.now());
+
+        return personDTO;
     }
 
 }

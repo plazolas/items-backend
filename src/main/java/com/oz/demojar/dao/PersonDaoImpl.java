@@ -142,9 +142,9 @@ class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public void addPersonToCountry(Person p, Country c) {
+    public Person addPersonToCountry(Person p, Country c) {
         p.setCountry(c);
-        personRepository.save(p);
+        return personRepository.save(p);
     }
 
     public Person setPassportToPerson(Passport passport, Person person) {

@@ -23,9 +23,6 @@ import org.springframework.context.annotation.Bean;
 @NoArgsConstructor
 public class PersonDTO implements Serializable {
 
-    // Does not get autowired!!
-    private AppProperties appProperties;
-
     private Long id;
 
     private String firstname;
@@ -95,46 +92,15 @@ public class PersonDTO implements Serializable {
         this.boss = person.getBoss();
     }
 
-    private String DateToString(LocalDateTime localDateTime) {
-        String dateTimeFormat = appProperties.getDatetime();
-        String dateTimeZone = appProperties.getTimezone();
-        DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern(Objects.requireNonNull(dateTimeFormat));
-        String timezone = Objects.requireNonNull(dateTimeFormat);
+    public Person convertToEntity(PersonDTO personDetails) throws NoSuchElementException {
 
-        if (localDateTime == null) localDateTime = LocalDateTime.now();
-
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(dateTimeZone));
-        DateTimeFormatter formatter = dateTimeFormatter;
-        return  zonedDateTime.format(formatter);
-    }
-
-    private String DateToString() {
-
-        // TODO: FIX
-        String dateTimeFormat = appProperties.getDatetime();
-        String dateTimeZone = appProperties.getTimezone();
-        DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern(Objects.requireNonNull(dateTimeFormat));
-        String timezone = Objects.requireNonNull(dateTimeFormat);
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.of(dateTimeZone));
-        DateTimeFormatter formatter = dateTimeFormatter;
-        return  zonedDateTime.format(formatter);
-    }
-
-    public Person convertToEntity(AppProperties appProperties, PersonDTO personDetails) throws NoSuchElementException {
-
-        this.appProperties = appProperties;
         Person person = new Person();
 
         person.setId(personDetails.getId());
-        person.setPassport(personDetails.getPassport());
-        person.setCountry(personDetails.getCountry());
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
+        person.setPassport(personDetails.getPassport());
+        person.setCountry(personDetails.getCountry());
         person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
         person.setPosition(personDetails.getPosition() == null ? "Management" : personDetails.getPosition());
         person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
