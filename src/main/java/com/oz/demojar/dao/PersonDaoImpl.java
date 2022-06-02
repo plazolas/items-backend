@@ -9,6 +9,8 @@ import com.oz.demojar.mysqlDatasource.PersonRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.FieldError;
@@ -59,6 +61,12 @@ class PersonDaoImpl implements PersonDao {
             return null;
         }
 
+    }
+
+    @Override
+    public Page<Person> selectAllPersonsPage(Pageable paging) {
+        Page<Person> persons = personRepository.findAll(paging);
+        return persons;
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.oz.demojar.dao;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,5 +33,7 @@ public interface PersonDao {
     Collection<Person> findPersonsWithPassportsByCountry(Long id);
 
     long findLastId();
+
+    Page selectAllPersonsPage(Pageable paging);
 
 }

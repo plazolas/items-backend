@@ -8,6 +8,7 @@ import com.oz.demojar.model.Person;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.util.*;
@@ -44,6 +45,17 @@ public class PersonService {
 
     public List<Person> getAllPersons() {
         return personDao.selectAllPersons();
+    }
+
+    public List<Person> getAllPersonsByPage(Integer pageNo, Integer pageSize, String sortBy) {
+
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Person> pagedResult = personDao.selectAllPersonsPage(paging);
+        if(pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public Optional<Person> getPersonById(Long id) {

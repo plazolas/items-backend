@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @EnableJpaRepositories(basePackages = "com.oz.demojar.dao")
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface PersonRepository extends JpaRepository<Person, Long>, PagingAndSortingRepository<Person, Long> {
 
     @Query(value = "SELECT * FROM person p WHERE p.first_name  = 'ann'", nativeQuery = true)
     Collection<Person> findAllAnns();

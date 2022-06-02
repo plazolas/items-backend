@@ -84,6 +84,19 @@ public class PersonController {
 
     @GetMapping
     public List<PersonDTO> getAllPersons() {
+
+        List<Person> personList = personService.getAllPersons();
+
+        return personList.stream()
+                .map(Person::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/paged")
+    public List<PersonDTO> getAllPersonsPage(@RequestParam(defaultValue = "0") Integer pageNo,
+                                             @RequestParam(defaultValue = "10") Integer pageSize,
+                                             @RequestParam(defaultValue = "id") String sortBy) {
+
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String msg = PersonController.class.getName() + ":" + methodName;
         System.out.println(msg);
@@ -92,7 +105,8 @@ public class PersonController {
         String ip = GetIpAddressUtils.getIpAddress(this.request);
         System.out.println("request from address: " + ip);
 
-        List<Person> personList = personService.getAllPersons();
+        System.out.println(pageNo + " " + pageSize + " " + sortBy);
+        List<Person> personList = personService.getAllPersonsByPage(pageNo, pageSize, sortBy);
 
         return personList.stream()
                 .map(Person::convertToDTO)
