@@ -126,22 +126,20 @@ public class Person {
         return this.id != null && this.firstName != null && this.lastName != null;
     }
 
-    public PersonDTO convertToDTO(Person person) throws NoSuchElementException {
+    public PersonDTO convertToDTO() {
 
         PersonDTO personDTO = new PersonDTO();
 
-        personDTO.setId(person.getId());
-        personDTO.setFirstname(person.getFirstName());
-        personDTO.setLastname(person.getLastName());
-        personDTO.setPassport(person.getPassport());
-        personDTO.setCountry(person.getCountry());
-        personDTO.setAge(person.getAge() == null ? 0 : person.getAge());
-        personDTO.setPosition(person.getPosition() == null ? "Management" : person.getPosition());
-        personDTO.setBoss(person.getBoss() == null ? 167 : person.getBoss());
+        personDTO.setId(this.getId());
+        personDTO.setFirstname(this.getFirstName());
+        personDTO.setLastname(this.getLastName());
+        personDTO.setPassport(this.getPassport());
+        personDTO.setCountry(this.getCountry());
+        personDTO.setAge(this.getAge() == null ? 0 : this.getAge());
+        personDTO.setPosition(this.getPosition() == null ? "Management" : this.getPosition());
+        personDTO.setBoss(this.getBoss() == null ? 167 : this.getBoss());
 
-        // testing Java 8 date formats --> NOT WORKING
-        // System.out.println(this.DateToString());
-        person.setUpdated(LocalDateTime.now());
+        this.setUpdated(LocalDateTime.now());
 
         return personDTO;
     }

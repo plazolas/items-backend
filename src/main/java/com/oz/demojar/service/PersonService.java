@@ -49,12 +49,10 @@ public class PersonService {
         return personDao.selectAllPersons();
     }
 
-    public Optional<PersonDTO> getPersonById(Long id) {
+    public Optional<Person> getPersonById(Long id) {
         Person person = personDao.getPersonById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find Person by id=" + id));
-        PersonDTO personDTO = person.convertToDTO(person);
-        System.out.println(personDTO);
-        return Optional.of(personDTO);
+        return Optional.of(person);
     }
 
     public Person updatePerson(Person person) {

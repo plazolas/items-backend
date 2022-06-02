@@ -162,7 +162,6 @@ class PersonDaoImpl implements PersonDao {
     }
 
     public Collection<Person> findPersonsWithPassportsByCountry(Long country_id) {
-        System.out.println("cid :"+country_id);
         return personRepository.findPersonsWithPassportsByCountry(country_id);
     }
 
