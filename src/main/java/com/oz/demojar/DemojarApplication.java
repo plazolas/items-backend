@@ -4,6 +4,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -11,7 +13,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Log4j2
 @SpringBootApplication
 @EnableJpaRepositories
-public class DemojarApplication {
+public class DemojarApplication extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(DemojarApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemojarApplication.class, args);

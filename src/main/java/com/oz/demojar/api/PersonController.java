@@ -97,15 +97,6 @@ public class PersonController {
                                              @RequestParam(defaultValue = "10") Integer pageSize,
                                              @RequestParam(defaultValue = "id") String sortBy) {
 
-        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String msg = PersonController.class.getName() + ":" + methodName;
-        System.out.println(msg);
-
-        System.out.println(appProperties);
-        String ip = GetIpAddressUtils.getIpAddress(this.request);
-        System.out.println("request from address: " + ip);
-
-        System.out.println(pageNo + " " + pageSize + " " + sortBy);
         List<Person> personList = personService.getAllPersonsByPage(pageNo, pageSize, sortBy);
 
         return personList.stream()
@@ -196,6 +187,14 @@ public class PersonController {
 
     @GetMapping("/findlast")
     public long findLastId() {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        String msg = PersonController.class.getName() + ":" + methodName;
+        System.out.println(msg);
+
+        System.out.println(appProperties);
+        String ip = GetIpAddressUtils.getIpAddress(this.request);
+        System.out.println("request from address: " + ip);
+
         return personService.findLastId();
     }
 

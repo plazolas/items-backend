@@ -50,6 +50,7 @@ public class PersonService {
     public List<Person> getAllPersonsByPage(Integer pageNo, Integer pageSize, String sortBy) {
 
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        System.out.println(paging);
         Page<Person> pagedResult = personDao.selectAllPersonsPage(paging);
         if(pagedResult.hasContent()) {
             return pagedResult.getContent();
