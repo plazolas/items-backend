@@ -78,8 +78,7 @@ public class ChallengeTests {
 
         String str = "the number of Number Random that fits is a fits at random random order";
         int words = Challenge.countWords(str);
-        assertEquals(words, 14,
-                str + " has " + words + " words.");
+        assertEquals(words, 14, str + " has " + words + " words.");
         log.info(str, words);
 
         str = "sssssakkkettreeere";
@@ -91,13 +90,20 @@ public class ChallengeTests {
     }
 
     @Test
-    @DisplayName("Test for chars and words")
+    @DisplayName("Test for Min Jumps")
     public void testMinJumps() {
 
-        int[] jumpArr = new int[]{2, 3, 1, 1, 2, 4, 2, 0, 1, 1};
-        // int jumps = Challenge.minJumps(jumpArr);
+        int[] jumpArr = new int[]{1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9};
+        int jumps = Challenge.minJumps(jumpArr);
+        assertEquals(3, jumps);
 
-        assertTrue(true, "to do");
+        jumpArr = new int[]{1, 4, 3, 2, 6, 7};
+        jumps = Challenge.minJumps(jumpArr);
+        assertEquals(2, jumps);
+
+        jumpArr = new int[]{2, 3, 1, 1, 2, 4, 2, 0, 1, 1};
+        jumps = Challenge.minJumps(jumpArr);
+        assertEquals(5, jumps);
 
     }
 

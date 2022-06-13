@@ -31,6 +31,7 @@ public class Challenge {
         if (a.length() < 1 || a.length() > 10000 ||
                 b.length() < 1 || b.length() > 10000) return false;
 
+        // anagrams must have same length
         if (a.length() != b.length()) return false;
 
         List<String> alphabet = CommonUtils.getAlphabet("lower");
@@ -104,8 +105,10 @@ public class Challenge {
     }
 
     public static int minJumps(int[] arr) {
-        if (arr.length == 0) return 0;
+        if (arr.length == 0) return -1;
+        if (arr[0] == 0) return 1;
 
+        // prints input arr
         StringBuilder in = new StringBuilder("[ ");
         for (int i = 0; i < arr.length; i++) {
             if (i < (arr.length - 1)) {
@@ -117,26 +120,23 @@ public class Challenge {
         in.append(" ]");
         System.out.println(in);
 
-        int idx = (arr[0] == 0) ? arr.length : 0;
+        int idx = 0;
         int step = arr[0];
         int jumps = 0;
-        while (idx < arr.length) {
-            System.out.println("idx value: " + idx);
-            System.out.println("element: " + step);
-            if (idx + step > arr.length || step == 0) {
+        while (idx + step <= arr.length - 1) {
+            System.out.println(jumps);
+            System.out.println(idx);
+            System.out.println(step);
+            if (step == 0) {
+                jumps = -1;
                 break;
-            } else {
-                System.out.println("jump: " + jumps);
-                idx = idx + step;
-                if (idx > arr.length) {
-                    return jumps;
-                } else {
-                    step = arr[idx];
-                }
-                jumps++;
             }
+            idx += step;
+            step = arr[idx];
+            jumps++;
+
         }
-        return jumps;
+        return jumps + 1;
     }
 
     public static void collectionTest() {
@@ -147,8 +147,8 @@ public class Challenge {
             System.out.println("created list: "+number);
 
             // demonstration of map method returns squares list
-            List<Integer> square = number.stream().map(x -> x*x).
-                    collect(Collectors.toList());
+            List<Integer> square =
+                    number.stream().map(x -> x*x).collect(Collectors.toList());
             System.out.println("squares: "+square);
 
             // create a list of String
@@ -157,8 +157,8 @@ public class Challenge {
             System.out.println("names: "+names);
 
             // demonstration of filter method
-            List<String> filtered = names.stream().filter(s->s.startsWith("S")).
-                    collect(Collectors.toList());
+            List<String> filtered =
+                    names.stream().filter(s->s.startsWith("S")).collect(Collectors.toList());
             System.out.println("filtered: "+filtered);
 
             // demonstration of sorted method

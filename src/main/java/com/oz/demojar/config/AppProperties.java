@@ -18,6 +18,6 @@ public class AppProperties {
     @Value("${server.port}")
     private String port;
 
-    @Value("${server.contextPath}")
+    @Value("${server.servlet.context-path}")
     private String contextPath;
 }
