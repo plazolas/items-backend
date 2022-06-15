@@ -140,6 +140,7 @@ public class PersonController {
 
             PersonDTO personDTO = updatedPerson.convertToDTO();
 
+
             return ResponseEntity.ok(personDTO);
 
         } catch (Exception e) {
@@ -297,6 +298,7 @@ public class PersonController {
             case "DataAccessException":
             case "JpaSystemException":
             case "ArrayIndexOutOfBoundsException":
+            case "NestedServletException":
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 break;
             case "NoSuchElementException":
