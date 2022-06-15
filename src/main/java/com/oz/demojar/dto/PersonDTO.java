@@ -1,12 +1,7 @@
 package com.oz.demojar.dto;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import com.oz.demojar.config.AppProperties;
@@ -14,13 +9,15 @@ import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 import lombok.*;
-import org.hibernate.internal.util.ZonedDateTimeComparator;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class PersonDTO implements Serializable {
 
     private Long id;
@@ -35,58 +32,36 @@ public class PersonDTO implements Serializable {
 
     private Integer boss;
 
-    private Country country = new Country();
+    private String countryName;
 
-    private Passport passport;
+    private Integer countryId;
 
-    public PersonDTO(String firstname, String lastname, Country country, String position, int age, int boss) {
+    private String passportNumber;
+
+    private Integer passportId;
+
+    public PersonDTO(String firstname, String lastname, String countryName, String position, int age, int boss) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.country = country;
+        this.countryName = countryName;
         this.position = position;
         this.age = age;
         this.boss = boss;
     }
 
-    public PersonDTO(String firstname, String lastname, Country country, Passport passport) {
+    public PersonDTO(String firstname, String lastname, String countryName, String passportNumber) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.country = country;
-        this.passport = passport;
-    }
-
-    public PersonDTO(String firstname, String lastname, Country country, Passport passport, String position) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.country = country;
-        this.passport = passport;
-        this.position = position;
-    }
-
-    public PersonDTO(String firstname, String lastname, Country country, Passport passport, String position, int age) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.country = country;
-        this.passport = passport;
-        this.position = position;
-        this.age = age;
-    }
-
-    public PersonDTO(String firstname, String lastname, Country country, Passport passport, String position, int age, int boss) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.country = country;
-        this.passport = passport;
-        this.position = position;
-        this.age = age;
-        this.boss = boss;
+        this.countryName = countryName;
+        this.passportNumber = passportNumber;
     }
 
     public PersonDTO(Person person) {
         this.firstname = person.getFirstName();
         this.lastname = person.getLastName();
-        this.country = person.getCountry();
-        this.passport = person.getPassport();
+        this.countryName = person.getCountry().getName();
+        this.passportId = person.getPassport().getId().intValue();
+        this.passportNumber = person.getPassport().getNumber();
         this.position = person.getPosition();
         this.age = person.getAge();
         this.boss = person.getBoss();
@@ -95,12 +70,13 @@ public class PersonDTO implements Serializable {
     public Person convertToEntity(PersonDTO personDetails) throws NoSuchElementException {
 
         Person person = new Person();
+        Country country = new Country(personDetails.getCountryId().longValue(), personDetails.getCountryName());
+
 
         person.setId(personDetails.getId());
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
-        person.setPassport(personDetails.getPassport());
-        person.setCountry(personDetails.getCountry());
+        person.setCountry(country);
         person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
         person.setPosition(personDetails.getPosition() == null ? "Management" : personDetails.getPosition());
         person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
@@ -108,6 +84,11 @@ public class PersonDTO implements Serializable {
         // testing Java 8 date formats --> NOT WORKING
         // System.out.println(this.DateToString());
         person.setUpdated(LocalDateTime.now());
+
+        Passport passport = new Passport(personDetails.getPassportId().longValue(), personDetails.getPassportNumber(), person, country);
+
+        passport.setPerson(person);
+        person.setPassport(passport);
 
         return person;
     }
@@ -132,7 +113,7 @@ public class PersonDTO implements Serializable {
     }
 
     @Bean
-    public ModelMapper modelMapper() {
+    public static ModelMapper modelMapper() {
         return new ModelMapper();
     }
 }

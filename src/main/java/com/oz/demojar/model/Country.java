@@ -8,11 +8,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonSerialize
+@Getter
+@Setter
 @Builder
+@JsonSerialize
 @Entity
 @Table(name="country")
 public class Country {
@@ -40,7 +41,11 @@ public class Country {
     public Country (String name) {
         this.name = name;
     }
+    public Country (Long id, String name) {
+        this.name = name;
+        this.id = id;
+    }
 
     @Override
-    public String toString() { return "Country{id=" + id + ", name='" + name + "'}"; }
+    public String toString() { return "Country{ id=" + id + ", name='" + name + "' }"; }
 }

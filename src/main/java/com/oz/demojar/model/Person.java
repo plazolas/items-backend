@@ -15,11 +15,13 @@ import com.oz.demojar.dto.PersonDTO;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonSerialize
+@Getter
+@Setter
+@ToString
 @Builder
+@JsonSerialize
 @Entity
 @Table(name="person")
 public class Person {
@@ -130,11 +132,16 @@ public class Person {
 
         PersonDTO personDTO = new PersonDTO();
 
+        Integer passportId = (this.passport == null) ? null : this.getPassport().getId().intValue();
+        String passportNumber = (this.passport == null) ? "" : this.getPassport().getNumber();
+
         personDTO.setId(this.getId());
         personDTO.setFirstname(this.getFirstName());
         personDTO.setLastname(this.getLastName());
-        personDTO.setPassport(this.getPassport());
-        personDTO.setCountry(this.getCountry());
+        personDTO.setPassportId(passportId);
+        personDTO.setPassportNumber(passportNumber);
+        personDTO.setCountryName(this.getCountry().getName());
+        personDTO.setCountryId(this.getCountry().getId().intValue());
         personDTO.setAge(this.getAge() == null ? 0 : this.getAge());
         personDTO.setPosition(this.getPosition() == null ? "Slave" : this.getPosition());
         personDTO.setBoss(this.getBoss() == null ? 167 : this.getBoss());
