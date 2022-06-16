@@ -81,12 +81,12 @@ class DemojarApplicationTests {
 
 		ModelMapper modelMapper = PersonDTO.modelMapper();
 
-		modelMapper.typeMap(Person.class, PersonDTO.class).addMappings(mapper -> {
-			mapper.map(src -> src.getFirstName().substring(0,1).toUpperCase() + src.getFirstName().substring(1),
-					PersonDTO::setFirstname);
-			mapper.map(src -> src.getLastName().substring(0,1).toUpperCase() + src.getLastName().substring(1),
-					PersonDTO::setLastname);
-		});
+//		modelMapper.typeMap(Person.class, PersonDTO.class).addMappings(mapper -> {
+//			mapper.map(src -> src.getFirstName().substring(0,1).toUpperCase() + src.getFirstName().substring(1),
+//					PersonDTO::setFirstname);
+//			mapper.map(src -> src.getLastName().substring(0,1).toUpperCase() + src.getLastName().substring(1),
+//					PersonDTO::setLastname);
+//		});
 
 	}
 

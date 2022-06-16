@@ -60,8 +60,8 @@ public class DemojarApplication {
 			if (profiles.length == 0) {
 				profiles = environment.getDefaultProfiles();
 			}
-			for (int i = 0; i < profiles.length; i++) {
-				System.out.println(profiles[i]);
+			for (String profile : profiles) {
+				System.out.println(profile);
 			}
 
 			log.info("Environment: " + environment.getProperty("spring.config.activate.on-profile"));
