@@ -51,6 +51,7 @@ public class DemojarApplication {
 				"erv"
 		);
 		listBeansPresence(partial);
+
 	}
 
 	@Bean

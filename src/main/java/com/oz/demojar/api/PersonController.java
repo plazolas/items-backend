@@ -2,10 +2,12 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
+import com.oz.demojar.model.Order;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
 import com.oz.demojar.security.StartupProperties;
+import com.oz.demojar.service.OrderService;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
@@ -49,6 +51,8 @@ public class PersonController {
     private transient UserService userService;
     @Autowired
     private transient PersonService personService;
+    @Autowired
+    private transient OrderService orderService;
 
     @Autowired
     public PersonController(HttpServletRequest httpRequest) {
@@ -198,10 +202,14 @@ public class PersonController {
 
         return personService.findLastId();
     }
-
     @GetMapping(value = "/ping")
     public String ping() {
         return "pong";
+    }
+
+    @PostMapping(value = "/logger")
+    public Boolean logger() {
+        return true;
     }
 
     @GetMapping(value = "/ping/{pathVar}")
@@ -228,6 +236,13 @@ public class PersonController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new SignupResponse("An error occurred while creating your account.", false);
         }
+    }
+
+    @PostMapping(path = "/insert_order", consumes = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> insertOrder(String message) {
+        orderService.addOrder(message);
+        return ResponseEntity.ok("accepted order message");
+
     }
 
     public class SignupResponse {
