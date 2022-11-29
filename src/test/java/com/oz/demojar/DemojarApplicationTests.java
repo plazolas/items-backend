@@ -19,11 +19,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.print.attribute.standard.Destination;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +62,20 @@ class DemojarApplicationTests {
 		log.info(String.valueOf(countries.size()));
 		assertEquals(12, countries.size(),
 				"All countries were included");
+		Map<String, Integer> countryMap = new HashMap<>();
+		countries.forEach(country -> {
+			assertTrue(country.getName().length() > 0);
+			countryMap.put(country.getName(),country.getId().intValue());
+		});
+		assertTrue(countryMap.containsKey("Colombia"));
+		assertTrue(countryMap.containsKey("Italy"));
+		assertEquals(countryMap.get("Colombia"),22);
+		assertEquals(countryMap.get("Italy"),33);
+
+		Country c = this.countryService.getCountryById(22L).get();
+		assertEquals(c.getId().intValue(), countryMap.get("Colombia"));
+
+
 	}
 
 	@Test
