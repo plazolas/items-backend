@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -62,7 +62,7 @@ public class Passport {
         this.number = country.getName().toUpperCase(Locale.ROOT).substring(0,2) +
                 person.getFirstName().toUpperCase(Locale.ROOT).substring(0,2) +
                 person.getLastName().toUpperCase(Locale.ROOT).substring(0,3) +
-                passportNumber;;
+                passportNumber;
         this.expDate = expDate;
         this.person = person;
         this.country = person.getCountry();

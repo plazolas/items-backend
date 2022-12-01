@@ -3,6 +3,7 @@ package com.oz.demojar.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,9 +27,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
+        http
+                .cors()
+                .and()
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("POST", "/api/vi/person/logger").permitAll()
+                .and()
+                .authorizeRequests()
                 .antMatchers("GET", "/api/vi/person/ping", "/error**").permitAll()
                 .antMatchers("GET", "/api/vi/person/account").permitAll()
+                .antMatchers("GET", "/api/vi/person/insert_order").permitAll()
                 .antMatchers("GET", "/").permitAll()
                 .antMatchers("GET", "/api/**").hasAnyRole("ADMIN", "USER","APP")
                 .anyRequest().authenticated()
