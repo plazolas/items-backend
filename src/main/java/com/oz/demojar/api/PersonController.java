@@ -186,8 +186,8 @@ public class PersonController {
 //        } catch (Exception e) {
 //            System.out.println(e.getMessage());
 //        }
-
-        return "pong";
+	String j = "{ 'user' : 'oswald' , 'email' : 'oswald@mail.com' }";
+        return j;
     }
 
     @GetMapping(value="/ping/{pathVar}")

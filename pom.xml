@@ -25,26 +25,26 @@
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 
-    <distributionManagement>
+    <!--distributionManagement>
         <repository>
             <id>ec2-3-211-223-79</id>
             <name>items-manager-jar</name>
             <uniqueVersion>false</uniqueVersion>
             <url>scpexe://ec2-3-211-223-79.compute-1.amazonaws.com/home/ec2-user/dev/items-backend/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement-->
 
     <dependencies>
         <dependency>
@@ -115,12 +115,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+	      <exclusions>
+                 <exclusion>
+                   <groupId>ch.qos.logback</groupId>
+                   <artifactId>logback-classic</artifactId>
+              </exclusion>
+            </exclusions>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
