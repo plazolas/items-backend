@@ -204,7 +204,7 @@ public class PersonController {
     }
     @GetMapping(value = "/ping")
     public String ping() {
-        return "pong";
+        return "new pong";
     }
 
     @PostMapping(value = "/logger")

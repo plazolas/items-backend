@@ -33,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("POST", "/api/vi/person/logger").permitAll()
+                .antMatchers("GET", "/api/vi/gateway/**").permitAll()
                 .and()
                 .authorizeRequests()
                 .antMatchers("GET", "/api/vi/person/ping", "/error**").permitAll()

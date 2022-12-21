@@ -50,7 +50,7 @@ public class DemojarApplication {
 				"Service",
 				"erv"
 		);
-		listBeansPresence(partial);
+		// listBeansPresence(partial);
 
 	}
 
