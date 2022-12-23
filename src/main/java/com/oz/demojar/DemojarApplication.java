@@ -1,6 +1,7 @@
 package com.oz.demojar;
 
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 
 import org.springframework.boot.ExitCodeGenerator;
@@ -31,7 +32,7 @@ import java.util.List;
 // @ComponentScan
 
 
-@Log4j2
+@Slf4j
 @SpringBootApplication
 @EnableJpaRepositories
 public class DemojarApplication {
@@ -62,7 +63,7 @@ public class DemojarApplication {
 				profiles = environment.getDefaultProfiles();
 			}
 			for (String profile : profiles) {
-				System.out.println(profile);
+				log.info(profile);
 			}
 
 			log.info("Environment: " + environment.getProperty("spring.config.activate.on-profile"));
@@ -76,7 +77,7 @@ public class DemojarApplication {
 		for (String dependency : partials) {
 			for (String beanName : beans) {
 				if (beanName.contains(dependency))
-					System.out.println(beanName);
+					log.info(beanName);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package com.oz.demojar.api;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.service.CountryService;
 import javassist.tools.rmi.ObjectNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
-
+@Slf4j
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/country")
 @RestController
@@ -35,7 +36,6 @@ public class CountryController {
     public ResponseEntity<Country> selectCountryById(@PathVariable("id") Long id) throws Exception {
        Country country = countryService.getCountryById(id)
                .orElseThrow((() -> new ObjectNotFoundException("Country " + id + " does not exits.")));
-        System.out.println(country);
        return ResponseEntity.ok().body(country);
     }
 
@@ -78,7 +78,7 @@ public class CountryController {
                 httpStatus = HttpStatus.NOT_FOUND;
 
         }
-        System.out.println("Request: " + req.getRequestURL() +
+        log.error("Request: " + req.getRequestURL() +
                 " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
         String message = ex.getMessage() + "--" + exName;
         return new ResponseEntity(message, httpStatus);

@@ -6,6 +6,7 @@ import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
@@ -19,7 +20,6 @@ import java.util.*;
  import org.springframework.data.repository.PagingAndSortingRepository;
  import java.util.stream.Collectors;
 */
-
 @Service
 public class PersonService {
 
@@ -50,7 +50,6 @@ public class PersonService {
     public List<Person> getAllPersonsByPage(Integer pageNo, Integer pageSize, String sortBy) {
 
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        System.out.println(paging);
         Page<Person> pagedResult = personDao.selectAllPersonsPage(paging);
         if(pagedResult.hasContent()) {
             return pagedResult.getContent();
@@ -134,9 +133,6 @@ public class PersonService {
             }
             Passport passport = passportRepository.getPassportById(passport_id);
 
-            System.out.println(person);
-            System.out.println(passport);
-
             person.setCountry(passport.getCountry());
             personDao.updatePersonById(person.getId(), person);
 
@@ -166,9 +162,6 @@ public class PersonService {
                 String first = obj[0].toString();
                 String last = String.valueOf(obj[1]);
                 String position = (obj[2] == null) ? "janitor" : String.valueOf(obj[2]);
-
-                System.out.println(first + " " + last + " " + position);
-
                 personList.add(first + " " + last + " " + position);
             }
         }

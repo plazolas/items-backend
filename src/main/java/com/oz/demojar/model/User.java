@@ -3,6 +3,7 @@ package com.oz.demojar.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +30,14 @@ public class User  {
     @JsonProperty("password")
     @Column(name = "password", nullable = false)
     private String password;
+
+    @JsonProperty("useremail")
+    @Column(name = "useremail", nullable = false)
+    private String useremail;
+
+    @JsonProperty("phone")
+    @Column(name = "phone", nullable = false)
+    private String phone;
 
     @JsonProperty("active")
     private boolean active;

@@ -2,12 +2,13 @@ package com.oz.demojar.dao;
 
 import com.oz.demojar.model.Order;
 import com.oz.demojar.mysqlDatasource.OrderRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-
+@Slf4j
 @Primary
 @Repository("orders")
 class OrderDaoImpl implements OrderDao {
@@ -21,7 +22,7 @@ class OrderDaoImpl implements OrderDao {
             Order orderObj = new Order(0L,message);
             return orderRepository.save(orderObj);
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            log.error("ERROR: " + e.getMessage());
             e.getStackTrace();
             return null;
         }

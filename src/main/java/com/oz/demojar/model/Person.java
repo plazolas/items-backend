@@ -143,7 +143,7 @@ public class Person {
         personDTO.setCountryName(this.getCountry().getName());
         personDTO.setCountryId(this.getCountry().getId().intValue());
         personDTO.setAge(this.getAge() == null ? 0 : this.getAge());
-        personDTO.setPosition(this.getPosition() == null ? "Slave" : this.getPosition());
+        personDTO.setPosition(this.getPosition() == null ? "Java Developer" : this.getPosition());
         personDTO.setBoss(this.getBoss() == null ? 167 : this.getBoss());
 
         this.setUpdated(LocalDateTime.now());

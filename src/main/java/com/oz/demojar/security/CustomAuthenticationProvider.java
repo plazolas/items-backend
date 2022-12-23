@@ -2,6 +2,7 @@ package com.oz.demojar.security;
 
 import com.oz.demojar.model.User;
 import com.oz.demojar.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -37,7 +38,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(username, password, roles);
             }
         } catch(Exception e) {
-            System.out.println("CustomAuthenticationProvider: Error");
+            log.error("CustomAuthenticationProvider: " + e.getMessage());
             // user does not exist in db
         }
         return null;

@@ -3,6 +3,7 @@ package com.oz.demojar.api;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.service.PassportService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
-
+@Slf4j
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/passport")
 @RestController
@@ -29,7 +30,6 @@ public class PassportController {
     @PostMapping  // (value="", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Passport createPassport(@RequestBody Person person) {
         Passport p = passportService.createPassport(person);
-        System.out.println(p);
         return p;
     }
 
@@ -90,7 +90,7 @@ public class PassportController {
                 httpStatus = HttpStatus.NOT_FOUND;
 
         }
-        System.out.println("Request: " + req.getRequestURL() +
+        log.error("Request: " + req.getRequestURL() +
                 " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
         String message = ex.getMessage() + "--" + exName;
         return new ResponseEntity(message, httpStatus);

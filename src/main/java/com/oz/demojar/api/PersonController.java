@@ -12,6 +12,7 @@ import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,9 +35,10 @@ import org.modelmapper.ModelMapper;
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/person")
 @RestController
+@Slf4j
 public class PersonController {
 
-    private final String cors = "http://www.ozdev.net";
+    private final String cors = "http://localhost:4200";
 
     private final HttpServletRequest request;
 
@@ -149,7 +151,7 @@ public class PersonController {
 
         } catch (Exception e) {
             e.getStackTrace();
-            System.out.println("catch: " + e.getMessage());
+            log.error("catch: " + e.getMessage());
             throw new NoSuchElementException("Item to update Exception.");
         }
 
@@ -194,11 +196,8 @@ public class PersonController {
     public long findLastId() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String msg = PersonController.class.getName() + ":" + methodName;
-        System.out.println(msg);
-
-        System.out.println(appProperties);
         String ip = GetIpAddressUtils.getIpAddress(this.request);
-        System.out.println("request from address: " + ip);
+        log.info("findlast: request from address: " + ip);
 
         return personService.findLastId();
     }
@@ -219,20 +218,28 @@ public class PersonController {
     }
 
     @PostMapping(value = "/account")
-    public SignupResponse postAccount(HttpServletResponse response,
+    public SignupResponse postCreateAccount(HttpServletResponse response,
                                       @RequestParam(value = "username") String username,
-                                      @RequestParam(value = "password") String password) {
+                                      @RequestParam(value = "password") String password,
+                                      @RequestParam(value = "useremail") String useremail,
+                                      @RequestParam(value = "phone") String phone) {
         try {
-            User newUser = User.builder()
-                    .username(username)
-                    .password(password)
-                    .active(true)
-                    .roles("ROLE_ADMIN, ROLE_USER")
-                    .build();
-            newUser.setPassword(newUser.getEncryptPassword(password));
-            userService.saveUser(newUser);
-            return new SignupResponse("Created user " + username, true);
+            if(!userService.checkUserExists(username)) {
+                User newUser = User.builder()
+                        .username(username)
+                        .password(password)
+                        .useremail(useremail)
+                        .phone(phone)
+                        .active(true)
+                        .roles("ROLE_USER")
+                        .build();
+                newUser.setPassword(newUser.getEncryptPassword(password));
+                userService.saveUser(newUser);
+                return new SignupResponse("Created user " + username, true);
+            }
+            return new SignupResponse("Returning user " + username, false);
         } catch (Exception e) {
+            log.error("Error signing up user: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new SignupResponse("An error occurred while creating your account.", false);
         }
@@ -323,7 +330,7 @@ public class PersonController {
                 httpStatus = HttpStatus.NOT_FOUND;
 
         }
-        System.out.println("Request: " + req.getRequestURL() +
+        log.info("Request: " + req.getRequestURL() +
                 " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
         String message = ex.getMessage() + "--" + exName;
         return new ResponseEntity(message, httpStatus);
