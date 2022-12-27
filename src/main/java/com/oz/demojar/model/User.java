@@ -76,7 +76,7 @@ public class User  {
                 this.getPassword() + ",active=" + this.isActive() + ",roles="+ this.getRoles() +"}";
     }
 
-    @Bean
+    // @Bean
     public static BCryptPasswordEncoder  bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2A);
     }

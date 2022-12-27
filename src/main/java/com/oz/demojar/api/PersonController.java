@@ -2,7 +2,6 @@ package com.oz.demojar.api;
 
 import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
-import com.oz.demojar.model.Order;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
@@ -30,15 +29,12 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 3600, origins = {"http://www.ozdev.net"})
 @RequestMapping("api/vi/person")
 @RestController
 @Slf4j
 public class PersonController {
 
-    private final String cors = "http://localhost:4200";
 
     private final HttpServletRequest request;
 
@@ -115,7 +111,7 @@ public class PersonController {
         return personService.searchAllItems(term);
     }
 
-    @CrossOrigin(origins = cors)
+
     @GetMapping(path = "/anns")
     public List<Person> getAllAnns() {
         Collection<Person> persons = personService.findAllAnns();
@@ -158,7 +154,6 @@ public class PersonController {
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
-    @CrossOrigin(origins = cors)
     public PersonDTO addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
         Person person = personService.getPersonById(pid)
                 .orElseThrow(() -> new NoSuchElementException("Person id does not exist."));
