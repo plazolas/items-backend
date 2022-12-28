@@ -23,7 +23,6 @@ public class GatewayService {
 
     @Cacheable(value = "artist", key = "#sid")
     public String getArtistById(String sid) {
-        log.info("did not hit the artist cache");
         String serviceURL = musicBrainz + "/artist/" + sid + "?fmt=json";
 
         HttpHeaders headers = new HttpHeaders();
@@ -35,7 +34,7 @@ public class GatewayService {
     }
     @Cacheable(value = "artists", key = "#artist")
     public String getArtistsByName(String artist) {
-        log.info("did not hit the ARTISTS cache");
+        log.info("Added the artists cache: " + artist);
         String serviceURL = musicBrainz + "/artist?query=" + artist + "&limit=100&offset=0&fmt=json";
 
         HttpHeaders headers = new HttpHeaders();
