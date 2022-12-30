@@ -9,8 +9,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Locale;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonSerialize
@@ -67,8 +66,5 @@ public class Passport {
         this.person = person;
         this.country = person.getCountry();
     }
-
-    @Override
-    public String toString() { return "Passport { id=" + id + ", number='" + number + ", expDate='" + expDate + ", person_id='" + person.getId() + "' }"; }
 
 }

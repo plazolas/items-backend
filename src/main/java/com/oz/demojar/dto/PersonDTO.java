@@ -1,93 +1,67 @@
 package com.oz.demojar.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;
-import lombok.*;
+
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.*;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Slf4j
 public class PersonDTO implements Serializable {
-
     private Long id;
-
     private String firstname;
-
     private String lastname;
-
     private String position;
-
     private Integer age;
-
     private Integer boss;
-
     private String countryName;
-
     private Integer countryId;
-
     private String passportNumber;
-
     private Integer passportId;
 
-    public PersonDTO(String firstname, String lastname, String countryName, String position, int age, int boss) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.countryName = countryName;
-        this.position = position;
-        this.age = age;
-        this.boss = boss;
-    }
-
-    public PersonDTO(String firstname, String lastname, String countryName, String passportNumber) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.countryName = countryName;
-        this.passportNumber = passportNumber;
-    }
-
-    public PersonDTO(Person person) {
-        this.firstname = person.getFirstName();
-        this.lastname = person.getLastName();
-        this.countryName = person.getCountry().getName();
-        this.passportId = person.getPassport().getId().intValue();
-        this.passportNumber = person.getPassport().getNumber();
-        this.position = person.getPosition();
-        this.age = person.getAge();
-        this.boss = person.getBoss();
-    }
-
-    public Person convertToEntity(PersonDTO personDetails) throws NoSuchElementException {
+    public Person convertToEntity(PersonDTO personDTO) throws NoSuchElementException {
 
         Person person = new Person();
-        Country country = new Country(personDetails.getCountryId().longValue(), personDetails.getCountryName());
+        Country country = new Country();
+        Passport passport = new Passport();
 
+        if(personDTO.getCountryId() > 0 && personDTO.getCountryName().length() > 5) {
+            country.setId(personDTO.getCountryId().longValue());
+            country.setName(personDTO.getCountryName());
+        } else {
+            country.setId(50L);
+            country.setName("United States");
+        }
 
-        person.setId(personDetails.getId());
-        person.setFirstName(personDetails.getFirstname());
-        person.setLastName(personDetails.getLastname());
+        if(personDTO.getPassportId() != null && personDTO.getPassportNumber() != null &&
+                personDTO.getPassportId() > 0 && personDTO.getPassportNumber().length() > 4) {
+            passport.setId(personDTO.getPassportId().longValue());
+            passport.setNumber(personDTO.getPassportNumber());
+        } else {
+            passport = null;
+        }
+
+        person.setId(personDTO.getId());
+        person.setFirstName(personDTO.getFirstname());
+        person.setLastName(personDTO.getLastname());
         person.setCountry(country);
-        person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
-        person.setPosition(personDetails.getPosition() == null ? "Management" : personDetails.getPosition());
-        person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
-
-        // testing Java 8 date formats --> NOT WORKING
-        // System.out.println(this.DateToString());
+        person.setAge(personDTO.getAge() == null ? 0 : personDTO.getAge());
+        person.setPosition(personDTO.getPosition() == null ? "Web Designer" : personDTO.getPosition());
+        person.setBoss(personDTO.getBoss() == null ? 167 : personDTO.getBoss());
         person.setUpdated(LocalDateTime.now());
 
-        Passport passport = new Passport(personDetails.getPassportId().longValue(), personDetails.getPassportNumber(), person, country);
+        if(passport != null) passport.setPerson(person);
 
-        passport.setPerson(person);
         person.setPassport(passport);
 
         return person;

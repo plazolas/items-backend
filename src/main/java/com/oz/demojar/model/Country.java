@@ -7,11 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @JsonSerialize
 @Entity
@@ -38,14 +36,4 @@ public class Country {
     @OneToMany(mappedBy = "country", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Passport> passports = new ArrayList<>();
 
-    public Country (String name) {
-        this.name = name;
-    }
-    public Country (Long id, String name) {
-        this.name = name;
-        this.id = id;
-    }
-
-    @Override
-    public String toString() { return "Country{ id=" + id + ", name='" + name + "' }"; }
 }

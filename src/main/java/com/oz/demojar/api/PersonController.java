@@ -34,15 +34,10 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 public class PersonController {
-
-
     private final HttpServletRequest request;
-
     @Autowired
     private final AppProperties appProperties = new AppProperties();
-
     private StartupProperties startupProperties;
-
     @Autowired
     private transient CountryService countryService;
     @Autowired
@@ -130,27 +125,17 @@ public class PersonController {
         return personService.deletePersonById(id);
     }
 
-    @PutMapping(path = "/p/{id}")
-    public ResponseEntity<PersonDTO> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
-        if (!Objects.equals(id, personDetails.getId())) {
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<PersonDTO> updateItemById(@PathVariable("id") Long id, @RequestBody PersonDTO personDTO) {
+        if (!Objects.equals(id, personDTO.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-
-        try {
-            Person updatedPerson = personService.updatePerson(personDetails.convertToEntity(personDetails));
-            if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
-
-            PersonDTO personDTO = updatedPerson.convertToDTO();
-
-
-            return ResponseEntity.ok(personDTO);
-
-        } catch (Exception e) {
-            e.getStackTrace();
-            log.error("catch: " + e.getMessage());
-            throw new NoSuchElementException("Item to update Exception.");
-        }
-
+        Person person = personDTO.convertToEntity(personDTO);
+        Person updatedPerson = personService.updatePerson(person);
+        if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
+        PersonDTO newPersonDTO = updatedPerson.convertToDTO();
+        log.info(newPersonDTO.toString());
+        return ResponseEntity.ok(newPersonDTO);
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
@@ -290,10 +275,8 @@ public class PersonController {
         }
     }
 
-    @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
-            DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
+    @ExceptionHandler
     public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
-
 
         Class<?> c = ex.getClass();
         String fullClassName = c.getName();
@@ -316,6 +299,7 @@ public class PersonController {
             case "JpaSystemException":
             case "ArrayIndexOutOfBoundsException":
             case "NestedServletException":
+            case "NullPointerException":
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 break;
             case "NoSuchElementException":
@@ -325,8 +309,9 @@ public class PersonController {
                 httpStatus = HttpStatus.NOT_FOUND;
 
         }
-        log.info("Request: " + req.getRequestURL() +
-                " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
+        log.error("Request: " + req.getRequestURL());
+        log.error("Raised: " + ex);
+        log.error("Message: " + ex.getMessage() + "--" + exName);
         String message = ex.getMessage() + "--" + exName;
         return new ResponseEntity(message, httpStatus);
     }

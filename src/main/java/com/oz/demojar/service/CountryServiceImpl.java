@@ -12,7 +12,7 @@ import java.util.Optional;
 class CountryServiceImpl implements CountryService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
 
     @Autowired
-    private CountryDao countryDao;
+    private static CountryDao countryDao;
 
     public List<Country> getAllCountries() {
         return countryDao.selectAllCountries();
@@ -21,4 +21,5 @@ class CountryServiceImpl implements CountryService { //  throws InvalidDataAcces
     public Optional<Country> getCountryById(Long id) {
         return countryDao.getCountryById(id);
     }
+
 }
