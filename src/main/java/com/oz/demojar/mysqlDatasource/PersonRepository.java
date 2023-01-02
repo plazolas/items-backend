@@ -53,7 +53,7 @@ public interface PersonRepository extends JpaRepository<Person, Long>, PagingAnd
             LocalDateTime updated
     );
 
-    @Query(value = "SELECT MAX(id) FROM person.person", nativeQuery = true)
+    @Query(value = "SELECT person.id FROM person.person ORDER BY person.updated DESC LIMIT 1", nativeQuery = true)
     long findLastId();
 
 }

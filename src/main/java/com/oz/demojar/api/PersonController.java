@@ -177,7 +177,7 @@ public class PersonController {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String msg = PersonController.class.getName() + ":" + methodName;
         String ip = GetIpAddressUtils.getIpAddress(this.request);
-        log.info("findlast: request from address: " + ip);
+        log.info(msg + " - findlast: request from address: " + ip);
 
         return personService.findLastId();
     }
