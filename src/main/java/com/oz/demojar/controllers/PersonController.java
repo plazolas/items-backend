@@ -2,6 +2,7 @@ package com.oz.demojar.controllers;
 
 import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
+import com.oz.demojar.exception.ErrorResponseVO;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -178,8 +180,8 @@ public class PersonController {
         return personService.findLastId();
     }
     @GetMapping(value = "/ping")
-    public String ping() {
-        return "new pong";
+    public  ResponseEntity<String> testErrorResponse() throws SQLException {
+        throw new SQLException("Sql Exception");
     }
 
     @PostMapping(value = "/logger")
@@ -227,7 +229,6 @@ public class PersonController {
         return ResponseEntity.ok("accepted order message");
 
     }
-
     public class SignupResponse {
         private String message;
         private boolean success;
@@ -270,47 +271,5 @@ public class PersonController {
             this.message = message;
         }
     }
-
-    @ExceptionHandler
-    public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
-
-        Class<?> c = ex.getClass();
-        String fullClassName = c.getName();
-        String[] parts = fullClassName.split("\\.");
-        String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
-
-        HttpStatus httpStatus;
-        switch (exName) {
-            case "InvalidDataAccessApiUsageException":
-            case "MethodArgumentTypeMismatchException":
-            case "HttpMessageNotReadableException":
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
-            case "DataIntegrityViolationException":
-            case "NumberFormatException":
-                httpStatus = HttpStatus.CONFLICT;
-                break;
-            case "SQLException":
-            case "DataAccessException":
-            case "JpaSystemException":
-            case "ArrayIndexOutOfBoundsException":
-            case "NestedServletException":
-            case "NullPointerException":
-                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                break;
-            case "NoSuchElementException":
-                httpStatus = HttpStatus.NO_CONTENT;
-                break;
-            default:
-                httpStatus = HttpStatus.NOT_FOUND;
-
-        }
-        log.error("Request: " + req.getRequestURL());
-        log.error("Raised: " + ex);
-        log.error("Message: " + ex.getMessage() + "--" + exName);
-        String message = ex.getMessage() + "--" + exName;
-        return new ResponseEntity(message, httpStatus);
-    }
-
 
 }
