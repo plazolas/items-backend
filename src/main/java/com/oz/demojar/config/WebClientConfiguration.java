@@ -3,11 +3,20 @@ package com.oz.demojar.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -16,7 +25,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.*;
 
 @Configuration
 @Slf4j
-public class WebClientConfiguration {
+public class WebClientConfiguration extends ResponseEntityExceptionHandler {
     @Bean
     public WebClient webClient() {
         return WebClient.builder().build();
@@ -50,23 +59,41 @@ public class WebClientConfiguration {
                 .bodyToMono(genericType);
     }
 
-    public <T> Mono<T> post(String path, HttpHeaders headers, String body, Class<T> genericType) {
+    public Mono<String> post(String path, HttpHeaders headers, String body) {
         return webClient()
                 .post()
                 .uri(path)
                 .headers(buildHeaders(headers))
                 .body(BodyInserters.fromValue(body))
-                .retrieve()
-                .bodyToMono(genericType);
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(String.class);
+                    } else if (response.statusCode().is5xxServerError()) {
+                        return Mono.just("Server Error");
+                    } else if (response.statusCode().is4xxClientError()) {
+                        return Mono.just("Not found");
+                    } else {
+                        return response.createException().flatMap(Mono::error);
+                    }
+                });
     }
 
-    public <T> Mono<T> get(String path, HttpHeaders headers, Class<T> genericType) {
-        return webClient()
+    public Mono<String> get(String path, HttpHeaders headers) {
+        return  webClient()
                 .get()
                 .uri(path)
                 .headers(buildHeaders(headers))
-                .retrieve()
-                .bodyToMono(genericType);
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(String.class);
+                    } else if (response.statusCode().is5xxServerError()) {
+                        return Mono.just("Server Error");
+                    } else if (response.statusCode().is4xxClientError()) {
+                        return Mono.just("Not found");
+                    } else {
+                        return response.createException().flatMap(Mono::error);
+                    }
+                });
     }
 
     private Consumer<HttpHeaders> buildHeaders(HttpHeaders httpHeaders) {

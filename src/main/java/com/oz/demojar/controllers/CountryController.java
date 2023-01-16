@@ -1,4 +1,4 @@
-package com.oz.demojar.api;
+package com.oz.demojar.controllers;
 
 import com.oz.demojar.model.Country;
 import com.oz.demojar.service.CountryService;
@@ -47,7 +47,6 @@ public class CountryController {
     @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
             DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
     public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
-
 
         Class<?> c = ex.getClass();
         String fullClassName = c.getName();

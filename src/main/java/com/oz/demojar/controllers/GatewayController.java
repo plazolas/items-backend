@@ -1,12 +1,6 @@
-package com.oz.demojar.api;
+package com.oz.demojar.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.oz.demojar.model.Country;
-import com.oz.demojar.model.Person;
-import com.oz.demojar.service.CountryService;
-import com.oz.demojar.service.GatewayService;
-import com.oz.demojar.service.OrderService;
-import javassist.tools.rmi.ObjectNotFoundException;
+import com.oz.demojar.service.MusicBrainzService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -19,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.List;
+
 @Slf4j
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("api/vi/gateway")
@@ -27,22 +21,38 @@ import java.util.List;
 public class GatewayController {
 
     @Autowired
-    private transient GatewayService gatewayService;
+    private transient MusicBrainzService musicBrainzService;
     public GatewayController() {}
 
     @GetMapping(path = "/artist/id", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getArtistBySid(
             @RequestParam String id
     ) {
-        return gatewayService.getArtistById(id);
+        return musicBrainzService.getArtistById(id);
     }
 
     @PostMapping(value="/artist/name", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> searchArtistByName(
                 @RequestParam String name
     ) {
-        String response = gatewayService.getArtistsByName(name);
+        String response = musicBrainzService.getArtistsByName(name);
         return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/artist/releases/{sid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchReleasesByArtist(
+            @PathVariable("sid") String sid
+    ) {
+        String response = musicBrainzService.getReleasesByArtistSid(sid);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/artist/release/{sid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchMediaByRelease(
+            @PathVariable("sid") String sid
+    ) {
+        String response = musicBrainzService.getMediaByReleaseSid(sid);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler({Exception.class, IllegalArgumentException.class, SQLException.class, DataAccessException.class,

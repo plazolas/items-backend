@@ -1,24 +1,15 @@
 package com.oz.demojar;
 
-import com.oz.demojar.model.Country;
-import com.oz.demojar.model.Person;
-import com.oz.demojar.service.CountryService;
-import com.oz.demojar.service.PersonService;
+
 import com.oz.demojar.utils.BinaryTree;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,7 +18,7 @@ import org.junit.Test;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 // @ContextConfiguration(classes = BinaryTreeTests.class)
-@ActiveProfiles(value="dev")
+
 public class BinaryTreeTests {
 
     private static final Logger log = LoggerFactory.getLogger(BinaryTreeTests.class);

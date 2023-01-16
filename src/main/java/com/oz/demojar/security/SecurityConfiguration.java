@@ -44,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("GET", "/api/vi/person/account").permitAll()
                 .antMatchers("GET", "/api/vi/person/insert_order").permitAll()
                 .antMatchers("GET", "/").permitAll()
-                //.antMatchers("GET", "/api/**").hasAnyRole("ADMIN", "USER","APP")
+                //.antMatchers("GET", "/controllers/**").hasAnyRole("ADMIN", "USER","APP")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -62,9 +62,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedOrigin("http://www.ozdev.net");
-        if(environment.getProperty("spring.config.activate.on-profile").equals( "dev")) {
+        // if(environment == null || environment.getProperty("spring.config.activate.on-profile").equals( "dev")) {
             configuration.addAllowedOrigin("http://localhost:4200");
-        }
+        // }
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
         return source;

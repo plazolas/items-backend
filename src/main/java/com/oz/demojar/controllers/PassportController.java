@@ -1,4 +1,4 @@
-package com.oz.demojar.api;
+package com.oz.demojar.controllers;
 
 import com.oz.demojar.model.Passport;
 import com.oz.demojar.model.Person;

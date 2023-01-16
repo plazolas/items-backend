@@ -1,4 +1,4 @@
-package com.oz.demojar.api;
+package com.oz.demojar.controllers;
 
 import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
@@ -13,9 +13,6 @@ import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
