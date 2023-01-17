@@ -2,7 +2,6 @@ package com.oz.demojar.controllers;
 
 import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
-import com.oz.demojar.exception.ErrorResponseVO;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
