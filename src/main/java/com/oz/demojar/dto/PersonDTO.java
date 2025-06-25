@@ -72,7 +72,6 @@ public class PersonDTO implements Serializable {
         Person person = new Person();
         Country country = new Country(personDetails.getCountryId().longValue(), personDetails.getCountryName());
 
-
         person.setId(personDetails.getId());
         person.setFirstName(personDetails.getFirstname());
         person.setLastName(personDetails.getLastname());
@@ -80,15 +79,12 @@ public class PersonDTO implements Serializable {
         person.setAge(personDetails.getAge() == null ? 0 : personDetails.getAge());
         person.setPosition(personDetails.getPosition() == null ? "Management" : personDetails.getPosition());
         person.setBoss(personDetails.getBoss() == null ? 167 : personDetails.getBoss());
-
-        // testing Java 8 date formats --> NOT WORKING
-        // System.out.println(this.DateToString());
         person.setUpdated(LocalDateTime.now());
 
-        Passport passport = new Passport(personDetails.getPassportId().longValue(), personDetails.getPassportNumber(), person, country);
-
-        passport.setPerson(person);
-        person.setPassport(passport);
+//        Passport passport = (personDetails.getPassportId() == null) ? null :
+//                new Passport(personDetails.getPassportId().longValue(), personDetails.getPassportNumber(), person, country);
+//        if(passport != null) passport.setPerson(person);
+//        person.setPassport(passport);
 
         return person;
     }

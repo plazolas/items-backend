@@ -2,7 +2,7 @@ package com.oz.demojar;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationRunner;
-
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -51,6 +51,10 @@ public class DemojarApplication {
 				"erv"
 		);
 		listBeansPresence(partial);
+
+		System.out.println(":::::::::::::::::::::::::");
+		System.out.println("hibernate-core version: " + org.hibernate.Version.getVersionString());
+		System.out.println("Spring Boot Version: " + SpringBootVersion.getVersion());;
 
 	}
 

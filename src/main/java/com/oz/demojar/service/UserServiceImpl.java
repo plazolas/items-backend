@@ -34,6 +34,8 @@ final class UserServiceImpl implements UserService { //  throws InvalidDataAcces
         userRepo.save(User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .phone("000")
+                .useremail("me@email.com")
                 .active(true)
                 .roles(user.getRoles())
                 .build());
@@ -43,6 +45,7 @@ final class UserServiceImpl implements UserService { //  throws InvalidDataAcces
         userRepo.save(User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .phone("000")
                 .active(true)
                 .roles(user.getRoles())
                 .build());

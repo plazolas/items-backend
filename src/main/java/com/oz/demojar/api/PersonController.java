@@ -36,7 +36,7 @@ import org.modelmapper.ModelMapper;
 @RestController
 public class PersonController {
 
-    private final String cors = "http://www.ozdev.net";
+    private final String cors = "http://localhost:4200";
 
     private final HttpServletRequest request;
 
@@ -139,11 +139,11 @@ public class PersonController {
         }
 
         try {
-            Person updatedPerson = personService.updatePerson(personDetails.convertToEntity(personDetails));
+            Person person = personDetails.convertToEntity(personDetails);
+            Person updatedPerson = personService.updatePerson(person);
             if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
 
             PersonDTO personDTO = updatedPerson.convertToDTO();
-
 
             return ResponseEntity.ok(personDTO);
 
@@ -226,6 +226,8 @@ public class PersonController {
             User newUser = User.builder()
                     .username(username)
                     .password(password)
+                    .phone("000")
+                    .useremail("me@email.com")
                     .active(true)
                     .roles("ROLE_ADMIN, ROLE_USER")
                     .build();
