@@ -20,4 +20,7 @@ public class AppProperties {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Value("${server.servlet.context-path}")
+    private String context;
 }

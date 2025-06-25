@@ -15,14 +15,15 @@ import java.util.Optional;
 public class PassportService {
 
     @Qualifier("passport")
-    private final PassportDao passportDao;
+    private static PassportDao passportDao;
     @Qualifier("person")
-    private final PersonDao personDao;
+    private static PersonDao personDao;
 
     @Autowired
     public PassportService(PassportDao passportDao, PersonDao personDao) {
-        this.passportDao = passportDao;
-        this.personDao = personDao;
+        // ojo
+        PassportService.passportDao = passportDao;
+        PassportService.personDao = personDao;
     }
 
     public Passport createPassport(Person person) {
@@ -46,5 +47,9 @@ public class PassportService {
     public int updatePassportById(Long id, Passport p) {
         passportDao.updatePassportById(id, p);
         return 1;
+    }
+
+    public static Passport selectById(Long id) {
+        return passportDao.getPassportById(id);
     }
 }

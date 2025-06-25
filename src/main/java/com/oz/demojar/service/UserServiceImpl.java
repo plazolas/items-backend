@@ -30,12 +30,18 @@ final class UserServiceImpl implements UserService { //  throws InvalidDataAcces
         return (userRepo.getUserByUsername(username).isPresent()) ? userRepo.getUserByUsername(username).get() : null;
     }
 
+    public Boolean checkUserExists(String username) {
+        return userRepo.getUserByUsername(username).isPresent();
+    }
+
     public void saveUser(User user) {
         userRepo.save(User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .phone("000")
                 .useremail("me@email.com")
+                .useremail(user.getUseremail())
+                .phone(user.getPhone())
                 .active(true)
                 .roles(user.getRoles())
                 .build());
@@ -46,6 +52,8 @@ final class UserServiceImpl implements UserService { //  throws InvalidDataAcces
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .phone("000")
+                .useremail(user.getUseremail())
+                .phone(user.getPhone())
                 .active(true)
                 .roles(user.getRoles())
                 .build());

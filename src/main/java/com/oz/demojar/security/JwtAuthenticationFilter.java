@@ -3,6 +3,7 @@ package com.oz.demojar.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,10 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -36,7 +38,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        return authenticationManager.authenticate(authenticationToken);
+        return  authenticationManager.authenticate(authenticationToken);
+
+//        Collection<GrantedAuthority> auths = (Collection<GrantedAuthority>) auth.getAuthorities();
+//        log.info(auth.getName());
+//        auths.forEach(a -> log.info(a.getAuthority()));
+//        return auth;
     }
 
     @Override
@@ -60,6 +67,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .collect(Collectors.toList());
 
         String token = getJWTToken(authentication.getName(), roles);
+
+        log.info("--------------------------------------");
+        log.info(authentication.getName());
+        roles.forEach(r -> log.info(r));
+        log.info(token);
+        log.info("--------------------------------------");
 
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");

@@ -7,6 +7,7 @@ import com.oz.demojar.mysqlDatasource.CountryRepository;
 import com.oz.demojar.mysqlDatasource.PassportRepository;
 import com.oz.demojar.mysqlDatasource.PersonRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ import javax.validation.ConstraintViolationException;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
-
+@Slf4j
 @Primary
 @Repository("person")
 class PersonDaoImpl implements PersonDao {
@@ -44,7 +45,6 @@ class PersonDaoImpl implements PersonDao {
         try {
             Person person = new Person(firstName, lastName, country, position, age, boss);
             Person newPerson = personRepository.save(person);
-            System.out.println("PersonDaoImpl: added " + newPerson);
             return newPerson;
         } catch (ConstraintViolationException e) {
             Set<ConstraintViolation<?>> errors;
@@ -52,11 +52,11 @@ class PersonDaoImpl implements PersonDao {
             errors.forEach(error -> {
                 String fieldName = ((FieldError) error).getField();
                 String errorMessage = error.getMessage();
-                System.out.println("field: " + fieldName + " msg: " + errorMessage);
+                log.error("field: " + fieldName + " msg: " + errorMessage);
             });
             return null;
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            log.error("ERROR: " + e.getMessage());
             e.getStackTrace();
             return null;
         }
@@ -94,7 +94,7 @@ class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person updatePerson(Person person) {
-        System.out.println(person);
+        log.debug(person.toString());
         long cid = (person.getCountry() == null) ? 50 : person.getCountry().getId();
 
             int success = personRepository.updatePerson(
@@ -107,7 +107,7 @@ class PersonDaoImpl implements PersonDao {
                     person.getBoss(),
                     person.getUpdated()
             );
-        if(success > 0) System.out.println("person update success");
+        if(success > 0) log.info("person update success");
         return (success > 0) ? person : null;
     }
 

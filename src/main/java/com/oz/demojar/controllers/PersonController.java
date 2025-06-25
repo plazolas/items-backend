@@ -1,21 +1,16 @@
-package com.oz.demojar.api;
+package com.oz.demojar.controllers;
 
-import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
-import com.oz.demojar.model.Order;
 import com.oz.demojar.model.Person;
 import com.oz.demojar.model.Country;
 import com.oz.demojar.model.User;
-import com.oz.demojar.security.StartupProperties;
 import com.oz.demojar.service.OrderService;
 import com.oz.demojar.service.PersonService;
 import com.oz.demojar.service.CountryService;
 import com.oz.demojar.service.UserService;
 import com.oz.demojar.utils.GetIpAddressUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +24,14 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 3600, origins = {"http://www.ozdev.net"})
 @RequestMapping("api/vi/person")
 @RestController
+@Slf4j
 public class PersonController {
 
     private final String cors = "http://localhost:4200";
-
     private final HttpServletRequest request;
-
-    @Autowired
-    private final AppProperties appProperties = new AppProperties();
-
-    private StartupProperties startupProperties;
-
     @Autowired
     private transient CountryService countryService;
     @Autowired
@@ -113,7 +100,7 @@ public class PersonController {
         return personService.searchAllItems(term);
     }
 
-    @CrossOrigin(origins = cors)
+
     @GetMapping(path = "/anns")
     public List<Person> getAllAnns() {
         Collection<Person> persons = personService.findAllAnns();
@@ -132,31 +119,25 @@ public class PersonController {
         return personService.deletePersonById(id);
     }
 
-    @PutMapping(path = "/p/{id}")
-    public ResponseEntity<PersonDTO> updateItemById(@PathVariable("id") Long id, @Valid @RequestBody PersonDTO personDetails) {
-        if (!Objects.equals(id, personDetails.getId())) {
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<PersonDTO> updateItemById(@PathVariable("id") Long id, @RequestBody PersonDTO personDTO) {
+        if (!Objects.equals(id, personDTO.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
 
         try {
-            Person person = personDetails.convertToEntity(personDetails);
+            Person person = personDTO.convertToEntity(personDTO);
             Person updatedPerson = personService.updatePerson(person);
             if (updatedPerson == null) throw new NoSuchElementException("item to update NOT found.");
-
-            PersonDTO personDTO = updatedPerson.convertToDTO();
-
-            return ResponseEntity.ok(personDTO);
-
+            return ResponseEntity.ok(updatedPerson.convertToDTO());
         } catch (Exception e) {
             e.getStackTrace();
             System.out.println("catch: " + e.getMessage());
             throw new NoSuchElementException("Item to update Exception.");
         }
-
     }
 
     @PutMapping(path = "/p/{pid}/c/{cid}")
-    @CrossOrigin(origins = cors)
     public PersonDTO addPersonToCountry(@PathVariable("pid") Long pid, @PathVariable("cid") Long cid) {
         Person person = personService.getPersonById(pid)
                 .orElseThrow(() -> new NoSuchElementException("Person id does not exist."));
@@ -194,17 +175,14 @@ public class PersonController {
     public long findLastId() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String msg = PersonController.class.getName() + ":" + methodName;
-        System.out.println(msg);
-
-        System.out.println(appProperties);
         String ip = GetIpAddressUtils.getIpAddress(this.request);
-        System.out.println("request from address: " + ip);
+        log.info(msg + " - findlast: request from address: " + ip);
 
         return personService.findLastId();
     }
     @GetMapping(value = "/ping")
-    public String ping() {
-        return "pong";
+    public  ResponseEntity<String> testErrorResponse() throws SQLException {
+        throw new SQLException("Sql Exception");
     }
 
     @PostMapping(value = "/logger")
@@ -219,22 +197,30 @@ public class PersonController {
     }
 
     @PostMapping(value = "/account")
-    public SignupResponse postAccount(HttpServletResponse response,
+    public SignupResponse postCreateAccount(HttpServletResponse response,
                                       @RequestParam(value = "username") String username,
-                                      @RequestParam(value = "password") String password) {
+                                      @RequestParam(value = "password") String password,
+                                      @RequestParam(value = "useremail") String useremail,
+                                      @RequestParam(value = "phone") String phone) {
         try {
-            User newUser = User.builder()
-                    .username(username)
-                    .password(password)
-                    .phone("000")
-                    .useremail("me@email.com")
-                    .active(true)
-                    .roles("ROLE_ADMIN, ROLE_USER")
-                    .build();
-            newUser.setPassword(newUser.getEncryptPassword(password));
-            userService.saveUser(newUser);
-            return new SignupResponse("Created user " + username, true);
+
+            if(!userService.checkUserExists(username)) {
+                User newUser = User.builder()
+                        .username(username)
+                        .password(password)
+                        .useremail(useremail)
+                        .phone(phone)
+                        .active(true)
+                        .roles("ROLE_USER")
+                        .build();
+                newUser.setPassword(newUser.getEncryptPassword(password));
+                userService.saveUser(newUser);
+                return new SignupResponse("Created user " + username, true);
+            }
+            return new SignupResponse("Returning user " + username, false);
+
         } catch (Exception e) {
+            log.error("Error signing up user: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new SignupResponse("An error occurred while creating your account.", false);
         }
@@ -246,7 +232,6 @@ public class PersonController {
         return ResponseEntity.ok("accepted order message");
 
     }
-
     public class SignupResponse {
         private String message;
         private boolean success;
@@ -289,47 +274,5 @@ public class PersonController {
             this.message = message;
         }
     }
-
-    @ExceptionHandler({Exception.class, SQLException.class, DataAccessException.class,
-            DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
-    public ResponseEntity errorHandler(HttpServletRequest req, Exception ex) {
-
-
-        Class<?> c = ex.getClass();
-        String fullClassName = c.getName();
-        String[] parts = fullClassName.split("\\.");
-        String exName = (parts.length > 0) ? parts[parts.length - 1] : "";
-
-        HttpStatus httpStatus;
-        switch (exName) {
-            case "InvalidDataAccessApiUsageException":
-            case "MethodArgumentTypeMismatchException":
-            case "HttpMessageNotReadableException":
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
-            case "DataIntegrityViolationException":
-            case "NumberFormatException":
-                httpStatus = HttpStatus.CONFLICT;
-                break;
-            case "SQLException":
-            case "DataAccessException":
-            case "JpaSystemException":
-            case "ArrayIndexOutOfBoundsException":
-            case "NestedServletException":
-                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                break;
-            case "NoSuchElementException":
-                httpStatus = HttpStatus.NO_CONTENT;
-                break;
-            default:
-                httpStatus = HttpStatus.NOT_FOUND;
-
-        }
-        System.out.println("Request: " + req.getRequestURL() +
-                " raised:" + ex + "\n" + ex.getMessage() + "--" + exName);
-        String message = ex.getMessage() + "--" + exName;
-        return new ResponseEntity(message, httpStatus);
-    }
-
 
 }

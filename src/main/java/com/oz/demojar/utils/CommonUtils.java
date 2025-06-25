@@ -2,14 +2,24 @@ package com.oz.demojar.utils;
 
 import net.minidev.json.JSONObject;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.nio.file.Files.readAllBytes;
+import static java.nio.file.Paths.get;
+
 public class CommonUtils {
 
-
+    public static String readFile(String filename) {
+        try {
+            return new String(readAllBytes(get("src/test/resources/MusicBrainz/" + filename)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;

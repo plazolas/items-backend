@@ -16,6 +16,7 @@ public interface UserService {
     void saveUser(User user);
 
     User getUserByUsername(String username);
+    Boolean checkUserExists(String username);
 
     User createAdminUser(User user);
 }

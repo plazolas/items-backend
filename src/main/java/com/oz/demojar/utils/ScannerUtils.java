@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class ScannerUtils {
 
     public static ArrayList getResults(File file) throws FileNotFoundException {
-        // Scanner sc=new Scanner(System.in);
         Scanner sc;
         ArrayList<Integer> results = new ArrayList<>();
         try {

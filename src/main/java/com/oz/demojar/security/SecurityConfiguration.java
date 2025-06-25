@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 
@@ -25,6 +26,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -33,13 +37,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("POST", "/api/vi/person/logger").permitAll()
+                .antMatchers("GET", "/api/vi/gateway/**").permitAll()
+                .antMatchers("GET", "/api/vi/person/ping", "/error**").permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers("GET", "/api/vi/person/ping", "/error**").permitAll()
                 .antMatchers("GET", "/api/vi/person/account").permitAll()
                 .antMatchers("GET", "/api/vi/person/insert_order").permitAll()
+                // .antMatchers("PUT", "/api/vi/person/update/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers("PUT", "/api/vi/person/update/**").permitAll()
                 .antMatchers("GET", "/").permitAll()
-                .antMatchers("GET", "/api/**").hasAnyRole("ADMIN", "USER","APP")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -48,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // .formLogin();
     }
 
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    public void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(customAuthenticationProvider);
     }
 
@@ -56,6 +62,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.addAllowedOrigin("http://www.ozdev.net");
+        // if(environment == null || environment.getProperty("spring.config.activate.on-profile").equals( "dev")) {
+            configuration.addAllowedOrigin("http://localhost:4200");
+        // }
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
         return source;

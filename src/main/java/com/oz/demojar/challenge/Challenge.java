@@ -143,17 +143,17 @@ public class Challenge {
         {
 
             // create a list of integers
-            List<Integer> number = Arrays.asList(2,3,4,5);
-            System.out.println("created list: "+number);
+            List<Integer> numbers = Arrays.asList(2,3,4,5);
+            System.out.println("created list: "+numbers);
 
             // demonstration of map method returns squares list
             List<Integer> square =
-                    number.stream().map(x -> x*x).collect(Collectors.toList());
+                    numbers.stream().map(x -> x*x).collect(Collectors.toList());
             System.out.println("squares: "+square);
 
             // create a list of String
             List<String> names =
-                    Arrays.asList("Reflection","Collection","Stream");
+                    Arrays.asList("Reflection","Collection","Stream"); 
             System.out.println("names: "+names);
 
             // demonstration of filter method
@@ -167,8 +167,8 @@ public class Challenge {
             System.out.println("sorted: "+sorted);
 
             // create a list of integers
-            List<Integer> numbers = Arrays.asList(2,3,4,5,2);
-            System.out.println("new created list: "+numbers);
+            numbers = Arrays.asList(2,3,4,5,2);
+            System.out.println("new created list: " + numbers);
 
             // collect method returns a set
             Set<Integer> squareSet =
@@ -177,11 +177,11 @@ public class Challenge {
 
             // demonstration of forEach method
 
-            number.stream().map(x->x*x).forEach(System.out::println);
+            numbers.stream().map(x->x*x).forEach(System.out::println);
 
             // demonstration of reduce method
             int even =
-                    number.stream().filter(x->x%2==0).reduce(2,(partialResult, element) -> partialResult + element);
+                    numbers.stream().filter(x->x%2==0).reduce(2,(partialResult, element) -> partialResult + element);
             System.out.println("reduced: "+even);
         }
     }

@@ -2,13 +2,14 @@ package com.oz.demojar.dao;
 
 import com.oz.demojar.model.User;
 import com.oz.demojar.mysqlDatasource.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Primary
 @Repository("user")
 class UserDaoImpl implements UserDao {
@@ -43,7 +44,7 @@ class UserDaoImpl implements UserDao {
 
     public void save(User user) {
         User newUser = userRepository.save(user);
-        System.out.println(newUser.getId().toString() + " | " + newUser.getUsername() + " | " + newUser.getPassword());
+        log.info(newUser.getId().toString() + " | " + newUser.getUsername() + " | " + newUser.getPassword());
     }
 
     public long findLastId() {
