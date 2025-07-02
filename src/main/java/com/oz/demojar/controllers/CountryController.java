@@ -39,4 +39,16 @@ public class CountryController {
        return ResponseEntity.ok().body(country);
     }
 
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<Country>> selectAllCountries() {
+        List<Country> countries = countryService.getAllCountries();
+        return ResponseEntity.ok().body(countries);
+    }
+
+    @PostMapping(path = "/update")
+    public ResponseEntity<Integer> updateCountry(@RequestBody Country country) {
+        Integer updated = countryService.updateCountry(country);
+        return ResponseEntity.ok().body(updated);
+    }
+
 }

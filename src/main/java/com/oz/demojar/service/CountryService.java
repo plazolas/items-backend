@@ -13,4 +13,7 @@ public interface CountryService {
     List<Country> getAllCountries();
 
     Optional<Country> getCountryById(Long id);
+
+
+    int updateCountry(Country country);
 }

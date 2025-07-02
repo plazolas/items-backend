@@ -13,4 +13,6 @@ public interface CountryDao {
 
     Optional<Country> getCountryById(Long id);
 
+    int updateCountry(Country country);
+
 }

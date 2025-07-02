@@ -22,4 +22,8 @@ class CountryServiceImpl implements CountryService { //  throws InvalidDataAcces
         return countryDao.getCountryById(id);
     }
 
+    public int updateCountry(Country country) {
+        return countryDao.updateCountry(country);
+    }
+
 }

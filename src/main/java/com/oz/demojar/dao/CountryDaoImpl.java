@@ -24,7 +24,7 @@ class CountryDaoImpl implements CountryDao {
 
     public List<Country> selectAllCountriesSorted() {
         List<Country> countries = countryRepository.findAll();
-        Collections.sort(countries, Comparator.comparing(c -> c.getName().toLowerCase()));
+        countries.sort(Comparator.comparing(c -> c.getName().toLowerCase()));
         return countries;
     }
 
@@ -52,5 +52,9 @@ class CountryDaoImpl implements CountryDao {
         return countryRepository.findLastId();
     }
 
+    @Override
+    public int updateCountry(Country country) {
+        return countryRepository.updateCountry(country.getName(), country.getId());
+    }
 }
 
