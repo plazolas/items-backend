@@ -22,9 +22,9 @@ class OrderServiceImpl implements OrderService { //  throws InvalidDataAccessApi
         return orderDao.getOrderById(id);
     }
 
-    public void addOrder(String message) {
+    public void addOrder(String name) {
         orderDao.save(Order.builder()
-                .order(message)
+                .clientName(name)
                 .build());
     }
 }

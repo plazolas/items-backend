@@ -15,7 +15,7 @@ import java.util.Locale;
 @JsonSerialize
 @Builder
 @Entity
-@Table(name="passport")
+@Table(name="Passport")
 public class Passport {
 
     @Id

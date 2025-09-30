@@ -7,10 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
-import com.oz.demojar.config.AppProperties;
 import com.oz.demojar.dto.PersonDTO;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,7 +21,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Builder
 @JsonSerialize
 @Entity
-@Table(name="person")
+@Table(name="Person")
 public class Person {
 
     @Id

@@ -18,7 +18,7 @@ import javax.persistence.*;
 @JsonSerialize
 @Builder
 @Entity
-@Table(name="user")
+@Table(name="User")
 public class User  {
 
     @Id
@@ -33,7 +33,7 @@ public class User  {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @JsonProperty("active")
+    @JsonProperty("is_active")
     private boolean active;
 
     @JsonProperty("roles")

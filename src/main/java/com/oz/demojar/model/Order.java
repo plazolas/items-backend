@@ -18,17 +18,17 @@ public class Order {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    private String order;
+    private String clientName;
 
     public Order(String order) {
-        this.order = order;
+        this.clientName = order;
     }
 
     public Order(Long id, String order) {
-        this.order = order;
+        this.clientName = order;
         this.id = id;
     }
 
     @Override
-    public String toString() { return "Order{ id=" + id + ", order='" + order + "' }"; }
+    public String toString() { return "Order{ id=" + id + ", clientName='" + clientName + "' }"; }
 }

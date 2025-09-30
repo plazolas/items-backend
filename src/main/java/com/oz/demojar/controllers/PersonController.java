@@ -49,18 +49,18 @@ public class PersonController {
         //this.validator = factory.getValidator();
     }
 
-//      ** WARNING ** --> THIS GENERATES ADMIN USER!
-//    @GetMapping(path = "/genadmin")
-//    public ResponseEntity<User> genAdmin() {
-//
-//        User newAdmin = new User(startupProperties.getUsername(), startupProperties.getPassword(), "ROLE_ADMIN" );
-//        try {
-//            userService.createAdminUser(newAdmin);
-//            return new ResponseEntity<User>(newAdmin, HttpStatus.CREATED);
-//        } catch (Exception e) {
-//            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+      //** WARNING ** --> THIS GENERATES ADMIN USER!
+    @GetMapping(path = "/genadmin")
+    public ResponseEntity<User> genAdmin() {
+
+        User newAdmin = new User("admin", "W2e3r4T5@", "ROLE_ADMIN" );
+        try {
+            userService.createAdminUser(newAdmin);
+            return new ResponseEntity<User>(newAdmin, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PersonDTO> addPerson(@Valid @RequestBody Person personDTO) {
