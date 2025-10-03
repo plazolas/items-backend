@@ -185,15 +185,9 @@ public class PersonController {
         throw new SQLException("Sql Exception");
     }
 
-    @PostMapping(value = "/logger")
-    public Boolean logger() {
-        return true;
-    }
-
     @GetMapping(value = "/ping/{pathVar}")
-    public PongMessage ping(@PathVariable Long pathVar,
-                            @RequestParam(value = "param", defaultValue = "defaultParam") String param) {
-        return new PongMessage(String.format("pong: %d, %s", pathVar, param));
+    public PongMessage ping() {
+        return new PongMessage("pong");
     }
 
     @PostMapping(value = "/account")

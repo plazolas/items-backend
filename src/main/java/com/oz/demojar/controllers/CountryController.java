@@ -24,9 +24,6 @@ public class CountryController {
     @Autowired
     private transient CountryService countryService;
 
-    @Autowired
-    public CountryController() {}
-
     @GetMapping
     public List<Country> getAllCountries() {
         return countryService.getAllCountries();

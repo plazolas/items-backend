@@ -46,7 +46,6 @@ public class DemojarApplication {
 		return () -> 0;
 	}
 
-	// System.setProperty("server.servlet.context-path", "/myapp");
 	public static void main(String[] args) {
 		applicationContext = SpringApplication.run(DemojarApplication.class, args);
 		List<String> partial = Arrays.asList(

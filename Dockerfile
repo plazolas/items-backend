@@ -1,11 +1,12 @@
 # Alpine Linux with OpenJDK JRE
-FROM openjdk:8-jre-alpine
+FROM openjdk:17-jdk-alpine
 
-ENV MYSQL_HOST=172.17.0.6
-ENV spring_profiles_active=prod
+ENV MYSQL_HOST=host.docker.internal
+ENV spring_profiles_active=dev
 
 # Copy war file
-COPY ./target/items-backend-0.0.1-SNAPSHOT.jar /items-backend-0.0.1-SNAPSHOT.jar
+COPY ./target/items-backend-0.0.1.jar /items-backend-0.0.1.jar
 
-# run the app
-CMD ["/usr/bin/java", "-jar", "/items-backend-0.0.1-SNAPSHOT.jar"]
+EXPOSE 8077
+# run the app on dev profile
+CMD ["java", "-jar", "-Dspring.profiles.active=dev", "/items-backend-0.0.1.jar"]

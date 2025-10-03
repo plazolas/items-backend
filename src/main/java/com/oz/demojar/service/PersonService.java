@@ -112,7 +112,8 @@ public class PersonService {
     public List<Person> massUpdate() {
         Person person = new Person();
         Query queryItems = em.createNativeQuery(
-                "Select p.id, p.country_id, p.passport_id from person p, passport t where p.passport_id = t.id " +
+                "Select p.id, p.country_id, p.passport_id " +
+                        "from person p, passport t where p.passport_id = t.id " +
                         "and p.country_id != t.country_id");
 
 //        "Select p.id as pid, p.country_id pcid, t.id as pid, t.country_id as tcid from person p, passport t where p.passport_id = t.id " +
