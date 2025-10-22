@@ -96,7 +96,7 @@ public class PersonService {
         query.setFirstResult((pageNumber-1) * pageSize);
         query.setMaxResults(pageSize);
         if (query.getMaxResults() > 0 && pageSize > query.getMaxResults()/pageNumber) {
-            pageSize = Math.round(query.getMaxResults()/pageNumber) - 1;
+            pageSize = Math.round((float) query.getMaxResults() /pageNumber) - 1;
             query.setMaxResults(pageSize);
         }
         // List<Person> lp =  r.stream().map(p -> p = (Person) p).collect(Collectors.toList());
@@ -156,9 +156,8 @@ public class PersonService {
                             " p.position like '%" + term + "%' "
             );
             List result = queryItems.getResultList();
-            Iterator<Object> itr = result.iterator();
-            while(itr.hasNext()) {
-                Object[] obj = (Object[]) itr.next();
+            for (Object o : result) {
+                Object[] obj = (Object[]) o;
                 // now you have one array of Object for each row
                 String first = obj[0].toString();
                 String last = String.valueOf(obj[1]);

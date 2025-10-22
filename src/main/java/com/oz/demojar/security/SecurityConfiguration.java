@@ -9,9 +9,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,7 +38,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and()
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeRequests()
                 .antMatchers("POST", "/api/vi/person/logger").permitAll()
                 .antMatchers("GET", "/api/vi/gateway/**").permitAll()
@@ -46,6 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // .antMatchers("PUT", "/api/vi/person/update/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("PUT", "/api/vi/person/update/**").permitAll()
                 .antMatchers("GET", "/").permitAll()
+                .antMatchers("GET", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -62,7 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.addAllowedOrigin("http://www.ozdev.net");
+        configuration.addAllowedOrigin("http://www.devenzone.com");
         // if(environment == null || environment.getProperty("spring.config.activate.on-profile").equals( "dev")) {
             configuration.addAllowedOrigin("http://localhost:4200");
         // }

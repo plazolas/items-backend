@@ -56,5 +56,9 @@ class CountryDaoImpl implements CountryDao {
     public int updateCountry(Country country) {
         return countryRepository.updateCountry(country.getName(), country.getId());
     }
+
+    public Country saveCountry(Country country) {
+        return countryRepository.save(country);
+    }
 }
 

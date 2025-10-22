@@ -56,9 +56,9 @@ public class PersonController {
         User newAdmin = new User("admin", "W2e3r4T5@", "ROLE_ADMIN" );
         try {
             userService.createAdminUser(newAdmin);
-            return new ResponseEntity<User>(newAdmin, HttpStatus.CREATED);
+            return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

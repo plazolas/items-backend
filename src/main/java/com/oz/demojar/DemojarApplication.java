@@ -55,9 +55,11 @@ public class DemojarApplication {
 				"Configuration",
 				"Component"
 		);
-		List<String> partial_filtered = partial.stream().filter(p -> p.contains("che")).collect(Collectors.toList());
+		// List<String> partial_filtered = partial.stream().filter(p -> p.contains("che")).collect(Collectors.toList());
+		List<String> partials_filtered = partial.stream().filter(p -> !p.isEmpty()).collect(Collectors.toList());
 		log.info("-------------  Beans: --------------");
-		listBeansPresence(partial_filtered);
+		String[] filters = {"Service"};
+		listBeansPresence(partials_filtered, filters);
 		log.info("------------------------------------");
 
 		System.out.println(":::::::::::::::::::::::::");
@@ -74,21 +76,27 @@ public class DemojarApplication {
 				profiles = environment.getDefaultProfiles();
 			}
 			for (String profile : profiles) {
-				log.info("Active profile: " + profile);
+                log.info("Active profile: {}", profile);
 			}
 
-			log.info("spring.config.activate.on-profile: " + environment.getProperty("spring.config.activate.on-profile"));
-			log.info("spring.datasource.url:  " + environment.getProperty("spring.datasource.url"));
-			log.info("DevTools:  spring.devtools.restart.enabled: "   + environment.getProperty("spring.devtools.restart.enabled"));
+            log.info("spring.config.activate.on-profile: {}", environment.getProperty("spring.config.activate.on-profile"));
+            log.info("spring.datasource.url:  {}", environment.getProperty("spring.datasource.url"));
+            log.info("DevTools:  spring.devtools.restart.enabled: {}", environment.getProperty("spring.devtools.restart.enabled"));
 		};
 	}
 
-	private static void listBeansPresence(List<String> partials) {
+	private static void listBeansPresence(List<String> partials, String[] filter) {
 		String[] beans = applicationContext.getBeanDefinitionNames();
 		for (String dependency : partials) {
 			for (String beanName : beans) {
-				if (beanName.contains(dependency))
-					log.info(beanName);
+				if(filter.length == 0) {
+					if (beanName.contains(dependency))
+					  log.info(beanName);
+				} else {
+					if (beanName.contains(dependency))
+						if(beanName.contains(filter[0]))
+						  log.info(beanName);
+				}
 			}
 		}
 	}

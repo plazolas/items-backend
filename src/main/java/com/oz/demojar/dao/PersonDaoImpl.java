@@ -43,9 +43,9 @@ class PersonDaoImpl implements PersonDao {
     public Person addPerson(String firstName, String lastName, Country country, String position, Integer age, Integer boss) {
 
         try {
+            long last = personRepository.findLastId();
             Person person = new Person(firstName, lastName, country, position, age, boss);
-            Person newPerson = personRepository.save(person);
-            return newPerson;
+            return personRepository.save(person);
         } catch (ConstraintViolationException e) {
             Set<ConstraintViolation<?>> errors;
             errors = e.getConstraintViolations();

@@ -31,13 +31,10 @@ if [[ "$POSITION" == *"president"* ]]; then
     exit
 fi
 
-exit
-
 docker stop items-backend
 docker rm -f items-backend
 docker rmi items-backend:1.0.0
 
 echo "==> all tests passed <=="
-
 
 echo "bye!"

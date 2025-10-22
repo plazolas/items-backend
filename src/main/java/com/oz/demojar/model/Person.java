@@ -21,7 +21,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Builder
 @JsonSerialize
 @Entity
-@Table(name="Person")
 public class Person {
 
     @Id

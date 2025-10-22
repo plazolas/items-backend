@@ -18,7 +18,6 @@ import javax.persistence.*;
 @JsonSerialize
 @Builder
 @Entity
-@Table(name="User")
 public class User  {
 
     @Id

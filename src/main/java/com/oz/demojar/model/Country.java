@@ -13,7 +13,6 @@ import java.util.*;
 @Builder
 @JsonSerialize
 @Entity
-@Table(name="country")
 public class Country {
 
     //private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

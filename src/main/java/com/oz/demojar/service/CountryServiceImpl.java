@@ -3,12 +3,13 @@ package com.oz.demojar.service;
 import com.oz.demojar.dao.CountryDao;
 import com.oz.demojar.model.Country;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component("CountryService")
 class CountryServiceImpl implements CountryService { //  throws InvalidDataAccessApiUsageException, NoSuchElementFoundException
 
     @Autowired
@@ -24,6 +25,10 @@ class CountryServiceImpl implements CountryService { //  throws InvalidDataAcces
 
     public int updateCountry(Country country) {
         return countryDao.updateCountry(country);
+    }
+
+    public Country saveCountry(Country country) {
+        return countryDao.saveCountry(country);
     }
 
 }
